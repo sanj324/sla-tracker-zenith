@@ -1,14 +1,16 @@
 import { Button } from "@/components/ui/button";
-import { Import, ArrowUpDown, Trash2 } from "lucide-react";
+import { Import, ArrowUpDown, Trash2, Plus } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { Bank } from "@/types/bank";
 
 interface DashboardActionsProps {
   onImport: () => void;
   onExport: () => void;
   onClear: () => void;
+  onAddBank: () => void;
 }
 
-const DashboardActions = ({ onImport, onExport, onClear }: DashboardActionsProps) => {
+const DashboardActions = ({ onImport, onExport, onClear, onAddBank }: DashboardActionsProps) => {
   const { toast } = useToast();
 
   const handleClear = () => {
@@ -47,10 +49,11 @@ const DashboardActions = ({ onImport, onExport, onClear }: DashboardActionsProps
         </Button>
       </div>
       <Button 
+        onClick={onAddBank}
         variant="secondary"
         className="bg-blue-600 hover:bg-blue-700 text-white"
       >
-        Add Bank
+        <Plus className="mr-2 h-4 w-4" /> Add Bank
       </Button>
     </div>
   );

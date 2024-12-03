@@ -3,10 +3,13 @@ import { Bank, DashboardStats } from "@/types/bank";
 import BankTable from "@/components/BankTable";
 import DashboardStatsDisplay from "@/components/DashboardStats";
 import DashboardActions from "@/components/DashboardActions";
+import BankForm from "@/components/BankForm";
 import { useToast } from "@/components/ui/use-toast";
 
 const Index = () => {
   const [banks, setBanks] = useState<Bank[]>([]);
+  const [formOpen, setFormOpen] = useState(false);
+  const [editingBank, setEditingBank] = useState<Bank | undefined>();
   const { toast } = useToast();
 
   const stats: DashboardStats = {
@@ -16,6 +19,54 @@ const Index = () => {
     pendingProcess: banks.filter((bank) => bank.status === "pending").length,
     mailsSent: banks.filter((bank) => bank.mailStatus === "sent").length,
     frankingCompleted: banks.filter((bank) => bank.inFranking).length,
+  };
+
+  const handleAddEditBank = (data: Partial<Bank>) => {
+    if (editingBank) {
+      // Update existing bank
+      setBanks(banks.map(bank => 
+        bank.id === editingBank.id 
+          ? { ...bank, ...data }
+          : bank
+      ));
+      toast({
+        title: "Bank updated",
+        description: "Bank information has been updated successfully.",
+      });
+    } else {
+      // Add new bank
+      const newBank: Bank = {
+        id: `bank-${Date.now()}`,
+        name: data.name || "",
+        branches: data.branches || 0,
+        mailStatus: data.mailStatus || "pending",
+        courierDate: data.courierDate || null,
+        receivedInTM: data.receivedInTM || false,
+        inFranking: data.inFranking || false,
+        status: data.status || "pending",
+      };
+      setBanks([...banks, newBank]);
+      toast({
+        title: "Bank added",
+        description: "New bank has been added successfully.",
+      });
+    }
+    setEditingBank(undefined);
+  };
+
+  const handleEdit = (bank: Bank) => {
+    setEditingBank(bank);
+    setFormOpen(true);
+  };
+
+  const handleDelete = (id: string) => {
+    if (window.confirm("Are you sure you want to delete this bank?")) {
+      setBanks(banks.filter((bank) => bank.id !== id));
+      toast({
+        title: "Bank deleted",
+        description: "The bank has been deleted successfully.",
+      });
+    }
   };
 
   const validateCsvData = (headers: string[]) => {
@@ -160,23 +211,23 @@ const Index = () => {
         onImport={handleImport}
         onExport={handleExport}
         onClear={handleClearData}
+        onAddBank={() => {
+          setEditingBank(undefined);
+          setFormOpen(true);
+        }}
       />
 
       <BankTable
         banks={banks}
-        onEdit={(bank) => {
-          toast({
-            title: "Edit bank",
-            description: `Editing ${bank.name}`,
-          });
-        }}
-        onDelete={(id) => {
-          setBanks(banks.filter((bank) => bank.id !== id));
-          toast({
-            title: "Bank deleted",
-            description: "The bank has been deleted successfully.",
-          });
-        }}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+
+      <BankForm
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        onSubmit={handleAddEditBank}
+        initialData={editingBank}
       />
     </div>
   );
