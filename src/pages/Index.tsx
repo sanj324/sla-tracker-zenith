@@ -4,6 +4,7 @@ import BankTable from "@/components/BankTable";
 import DashboardStatsDisplay from "@/components/DashboardStats";
 import DashboardActions from "@/components/DashboardActions";
 import BankForm from "@/components/BankForm";
+import ReportsSection from "@/components/ReportsSection";
 import { useToast } from "@/components/ui/use-toast";
 
 const Index = () => {
@@ -216,6 +217,8 @@ const Index = () => {
           setFormOpen(true);
         }}
       />
+
+      <ReportsSection banks={banks} />
 
       <BankTable
         banks={banks}
