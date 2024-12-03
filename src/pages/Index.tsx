@@ -19,6 +19,20 @@ const Index = () => {
     frankingCompleted: banks.filter((bank) => bank.inFranking).length,
   };
 
+  const validateCsvData = (headers: string[], values: string[]) => {
+    const expectedHeaders = ["Bank Name", "Branches", "Mail Status", "Courier Date", "Received in TM", "In Franking", "Status"];
+    const headerString = headers.join(',').toLowerCase();
+    const expectedHeaderString = expectedHeaders.join(',').toLowerCase();
+    
+    if (headerString !== expectedHeaderString) {
+      throw new Error("Invalid CSV format. Please ensure the headers match the expected format.");
+    }
+    
+    if (values.length !== headers.length) {
+      throw new Error("Invalid data format. Please ensure all fields are present.");
+    }
+  };
+
   const handleImport = () => {
     const input = document.createElement("input");
     input.type = "file";
@@ -28,30 +42,54 @@ const Index = () => {
       if (file) {
         const reader = new FileReader();
         reader.onload = (event) => {
-          const csvText = event.target?.result as string;
-          const lines = csvText.split('\n');
-          const headers = lines[0].split(',');
-          
-          const importedBanks: Bank[] = lines.slice(1).map((line, index) => {
-            const values = line.split(',');
-            return {
-              id: `imported-${index}`,
-              name: values[0] || '',
-              branches: parseInt(values[1]) || 0,
-              mailStatus: (values[2] as "sent" | "pending" | "failed") || "pending",
-              courierDate: values[3] || null,
-              receivedInTM: values[4]?.toLowerCase() === 'true',
-              inFranking: values[5]?.toLowerCase() === 'true',
-              status: (values[6] as "completed" | "pending" | "failed") || "pending"
-            };
-          }).filter(bank => bank.name); // Filter out empty rows
+          try {
+            const csvText = event.target?.result as string;
+            const lines = csvText.split('\n').map(line => line.trim()).filter(line => line);
+            const headers = lines[0].split(',').map(header => header.trim());
+            
+            validateCsvData(headers, lines[1]?.split(',') || []);
+            
+            const importedBanks: Bank[] = lines.slice(1).map((line, index) => {
+              const values = line.split(',').map(value => value.trim());
+              
+              if (!values[0]) {
+                throw new Error(`Row ${index + 2}: Bank name is required`);
+              }
 
-          setBanks(prevBanks => [...prevBanks, ...importedBanks]);
+              return {
+                id: `imported-${index}`,
+                name: values[0],
+                branches: parseInt(values[1]) || 0,
+                mailStatus: (values[2] as "sent" | "pending" | "failed") || "pending",
+                courierDate: values[3] || null,
+                receivedInTM: values[4]?.toLowerCase() === 'true',
+                inFranking: values[5]?.toLowerCase() === 'true',
+                status: (values[6] as "completed" | "pending" | "failed") || "pending"
+              };
+            });
+
+            setBanks(prevBanks => [...prevBanks, ...importedBanks]);
+            toast({
+              title: "Import successful",
+              description: `${importedBanks.length} banks have been imported successfully.`,
+            });
+          } catch (error) {
+            toast({
+              title: "Import failed",
+              description: error instanceof Error ? error.message : "Failed to import CSV file",
+              variant: "destructive",
+            });
+          }
+        };
+
+        reader.onerror = () => {
           toast({
-            title: "Import successful",
-            description: `${importedBanks.length} banks have been imported successfully.`,
+            title: "Import failed",
+            description: "Failed to read the CSV file",
+            variant: "destructive",
           });
         };
+
         reader.readAsText(file);
       }
     };
