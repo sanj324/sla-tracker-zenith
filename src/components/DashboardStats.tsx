@@ -1,12 +1,12 @@
 import { Building2, CheckCircle, AlertCircle, Mail, FileCheck } from "lucide-react";
 import StatsCard from "@/components/StatsCard";
-import { DashboardStats as Stats } from "@/types/bank";
+import { DashboardStats } from "@/types/bank";
 
 interface DashboardStatsProps {
-  stats: Stats;
+  stats: DashboardStats;
 }
 
-const DashboardStats = ({ stats }: DashboardStatsProps) => {
+const DashboardStatsDisplay = ({ stats }: DashboardStatsProps) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
       <StatsCard
@@ -51,4 +51,4 @@ const DashboardStats = ({ stats }: DashboardStatsProps) => {
   );
 };
 
-export default DashboardStats;
+export default DashboardStatsDisplay;
