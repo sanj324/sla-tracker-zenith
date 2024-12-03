@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { Bank, DashboardStats } from "@/types/bank";
-import StatsCard from "@/components/StatsCard";
 import BankTable from "@/components/BankTable";
-import { Button } from "@/components/ui/button";
-import { Building2, CheckCircle, AlertCircle, Mail, FileCheck, Import, ArrowUpDown } from "lucide-react";
+import DashboardStats from "@/components/DashboardStats";
+import DashboardActions from "@/components/DashboardActions";
 import { useToast } from "@/components/ui/use-toast";
 
 const Index = () => {
@@ -115,76 +114,22 @@ const Index = () => {
     });
   };
 
+  const handleClearData = () => {
+    setBanks([]);
+  };
+
   return (
     <div className="container mx-auto py-8 px-4">
       <h1 className="text-4xl font-bold mb-8 text-center">SLA Tracking System</h1>
       <p className="text-center text-gray-600 mb-12">Track and manage bank communications efficiently</p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-        <StatsCard
-          title="Total Banks"
-          value={stats.totalBanks}
-          icon={<Building2 />}
-          gradient="bg-gradient-to-r from-blue-600 to-blue-800"
-        />
-        <StatsCard
-          title="Total Branches"
-          value={stats.totalBranches}
-          icon={<Building2 />}
-          gradient="bg-gradient-to-r from-purple-600 to-purple-800"
-        />
-        <StatsCard
-          title="Completed Process"
-          value={`${stats.completedProcess} Banks (${
-            stats.totalBanks ? Math.round((stats.completedProcess / stats.totalBanks) * 100) : 0
-          }%)`}
-          icon={<CheckCircle />}
-          gradient="bg-gradient-to-r from-green-600 to-green-800"
-        />
-        <StatsCard
-          title="Pending Process"
-          value={`${stats.pendingProcess} Banks`}
-          icon={<AlertCircle />}
-          gradient="bg-gradient-to-r from-yellow-600 to-yellow-800"
-        />
-        <StatsCard
-          title="Mail Status"
-          value={`${stats.mailsSent} Sent`}
-          icon={<Mail />}
-          gradient="bg-gradient-to-r from-blue-500 to-blue-700"
-        />
-        <StatsCard
-          title="Franking Status"
-          value={`${stats.frankingCompleted} Completed`}
-          icon={<FileCheck />}
-          gradient="bg-gradient-to-r from-pink-600 to-pink-800"
-        />
-      </div>
-
-      <div className="flex justify-between items-center mb-6">
-        <div className="space-x-4">
-          <Button 
-            onClick={handleImport}
-            variant="secondary"
-            className="bg-blue-600 hover:bg-blue-700 text-white"
-          >
-            <Import className="mr-2 h-4 w-4" /> Import
-          </Button>
-          <Button 
-            onClick={handleExport}
-            variant="secondary"
-            className="bg-blue-600 hover:bg-blue-700 text-white"
-          >
-            <ArrowUpDown className="mr-2 h-4 w-4" /> Export
-          </Button>
-        </div>
-        <Button 
-          variant="secondary"
-          className="bg-blue-600 hover:bg-blue-700 text-white"
-        >
-          Add Bank
-        </Button>
-      </div>
+      <DashboardStats stats={stats} />
+      
+      <DashboardActions
+        onImport={handleImport}
+        onExport={handleExport}
+        onClear={handleClearData}
+      />
 
       <BankTable
         banks={banks}
