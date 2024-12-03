@@ -3,7 +3,7 @@ import { Bank, DashboardStats } from "@/types/bank";
 import StatsCard from "@/components/StatsCard";
 import BankTable from "@/components/BankTable";
 import { Button } from "@/components/ui/button";
-import { Building2, CheckCircle, AlertCircle, Mail, FileCheck, Import, Export } from "lucide-react";
+import { Building2, CheckCircle, AlertCircle, Mail, FileCheck, Import, ArrowUpDown } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 const Index = () => {
@@ -101,7 +101,7 @@ const Index = () => {
             <Import className="mr-2 h-4 w-4" /> Import
           </Button>
           <Button onClick={handleExport}>
-            <Export className="mr-2 h-4 w-4" /> Export
+            <ArrowUpDown className="mr-2 h-4 w-4" /> Export
           </Button>
         </div>
         <Button variant="default">Add Bank</Button>
