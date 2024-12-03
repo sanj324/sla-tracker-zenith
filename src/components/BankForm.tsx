@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useState, useEffect } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,13 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
     }
   });
 
+  // Reset form when initialData changes
+  useEffect(() => {
+    if (initialData) {
+      form.reset(initialData);
+    }
+  }, [initialData, form]);
+
   const handleSubmit = (data: Partial<Bank>) => {
     onSubmit(data);
     onOpenChange(false);
@@ -38,6 +45,9 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>{initialData ? "Edit Bank" : "Add New Bank"}</DialogTitle>
+          <DialogDescription>
+            {initialData ? "Update bank information" : "Add a new bank to the system"}
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
@@ -60,7 +70,12 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
                 <FormItem>
                   <FormLabel>Branches</FormLabel>
                   <FormControl>
-                    <Input type="number" {...field} onChange={e => field.onChange(Number(e.target.value))} />
+                    <Input 
+                      type="number" 
+                      {...field} 
+                      onChange={e => field.onChange(Number(e.target.value))}
+                      value={field.value || ''}
+                    />
                   </FormControl>
                 </FormItem>
               )}
@@ -91,7 +106,11 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
                 <FormItem>
                   <FormLabel>Courier Date</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <Input 
+                      type="date" 
+                      {...field} 
+                      value={field.value || ''} 
+                    />
                   </FormControl>
                 </FormItem>
               )}
