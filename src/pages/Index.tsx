@@ -11,7 +11,7 @@ const Index = () => {
 
   const stats: DashboardStats = {
     totalBanks: banks.length,
-    totalBranches: banks.reduce((acc, bank) => acc + bank.branches, 0),
+    totalBranches: banks.reduce((acc, bank) => acc + (bank.branches || 0), 0),
     completedProcess: banks.filter((bank) => bank.status === "completed").length,
     pendingProcess: banks.filter((bank) => bank.status === "pending").length,
     mailsSent: banks.filter((bank) => bank.mailStatus === "sent").length,
@@ -25,10 +25,6 @@ const Index = () => {
     
     if (headerString !== expectedHeaderString) {
       throw new Error("Invalid CSV format. Please ensure the headers match the expected format.");
-    }
-    
-    if (values.length !== headers.length) {
-      throw new Error("Invalid data format. Please ensure all fields are present.");
     }
   };
 
@@ -51,6 +47,7 @@ const Index = () => {
             const importedBanks: Bank[] = lines.slice(1).map((line, index) => {
               const values = line.split(',').map(value => value.trim());
               
+              // Only validate bank name as required
               if (!values[0]) {
                 throw new Error(`Row ${index + 2}: Bank name is required`);
               }
@@ -58,12 +55,19 @@ const Index = () => {
               return {
                 id: `imported-${index}`,
                 name: values[0],
-                branches: parseInt(values[1]) || 0,
-                mailStatus: (values[2] as "sent" | "pending" | "failed") || "pending",
+                branches: values[1] ? parseInt(values[1]) : 0,
+                mailStatus: (values[2]?.toLowerCase() === 'done' || values[2]?.toLowerCase() === 'sent') 
+                  ? 'sent' 
+                  : values[2]?.toLowerCase() === 'pending' 
+                  ? 'pending' 
+                  : 'failed',
                 courierDate: values[3] || null,
-                receivedInTM: values[4]?.toLowerCase() === 'true',
-                inFranking: values[5]?.toLowerCase() === 'true',
-                status: (values[6] as "completed" | "pending" | "failed") || "pending"
+                receivedInTM: values[4]?.toLowerCase() === 'yes' || values[4]?.toLowerCase() === 'true',
+                inFranking: values[5]?.toLowerCase() === 'yes' || values[5]?.toLowerCase() === 'true',
+                status: values[6] ? 
+                  (values[6].toLowerCase() === 'completed' ? 'completed' : 
+                   values[6].toLowerCase() === 'pending' ? 'pending' : 'failed')
+                  : 'pending'
               };
             });
 
@@ -98,7 +102,7 @@ const Index = () => {
   const handleExport = () => {
     const headers = ["Bank Name,Branches,Mail Status,Courier Date,Received in TM,In Franking,Status"];
     const csvData = banks.map(bank => (
-      `${bank.name},${bank.branches},${bank.mailStatus},${bank.courierDate || ''},${bank.receivedInTM},${bank.inFranking},${bank.status}`
+      `${bank.name},${bank.branches || ''},${bank.mailStatus || ''},${bank.courierDate || ''},${bank.receivedInTM || ''},${bank.inFranking || ''},${bank.status || ''}`
     ));
     
     const csv = headers.concat(csvData).join('\n');
