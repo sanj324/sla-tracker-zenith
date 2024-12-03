@@ -26,21 +26,51 @@ const Index = () => {
     input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
-        toast({
-          title: "Import successful",
-          description: "Bank data has been imported successfully.",
-        });
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const csvText = event.target?.result as string;
+          const lines = csvText.split('\n');
+          const headers = lines[0].split(',');
+          
+          const importedBanks: Bank[] = lines.slice(1).map((line, index) => {
+            const values = line.split(',');
+            return {
+              id: `imported-${index}`,
+              name: values[0] || '',
+              branches: parseInt(values[1]) || 0,
+              mailStatus: (values[2] as "sent" | "pending" | "failed") || "pending",
+              courierDate: values[3] || null,
+              receivedInTM: values[4]?.toLowerCase() === 'true',
+              inFranking: values[5]?.toLowerCase() === 'true',
+              status: (values[6] as "completed" | "pending" | "failed") || "pending"
+            };
+          }).filter(bank => bank.name); // Filter out empty rows
+
+          setBanks(prevBanks => [...prevBanks, ...importedBanks]);
+          toast({
+            title: "Import successful",
+            description: `${importedBanks.length} banks have been imported successfully.`,
+          });
+        };
+        reader.readAsText(file);
       }
     };
     input.click();
   };
 
   const handleExport = () => {
-    const csv = "data:text/csv;charset=utf-8," + encodeURIComponent("bank data");
-    const link = document.createElement("a");
-    link.href = csv;
+    const headers = ["Bank Name,Branches,Mail Status,Courier Date,Received in TM,In Franking,Status"];
+    const csvData = banks.map(bank => (
+      `${bank.name},${bank.branches},${bank.mailStatus},${bank.courierDate || ''},${bank.receivedInTM},${bank.inFranking},${bank.status}`
+    ));
+    
+    const csv = headers.concat(csvData).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
     link.download = "bank-data.csv";
     link.click();
+    
     toast({
       title: "Export successful",
       description: "Bank data has been exported successfully.",
