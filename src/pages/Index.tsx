@@ -26,7 +26,6 @@ const Index = () => {
     input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
-        // In a real app, we would parse the CSV here
         toast({
           title: "Import successful",
           description: "Bank data has been imported successfully.",
@@ -37,7 +36,6 @@ const Index = () => {
   };
 
   const handleExport = () => {
-    // In a real app, we would generate a CSV here
     const csv = "data:text/csv;charset=utf-8," + encodeURIComponent("bank data");
     const link = document.createElement("a");
     link.href = csv;
@@ -97,10 +95,18 @@ const Index = () => {
 
       <div className="flex justify-between items-center mb-6">
         <div className="space-x-4">
-          <Button onClick={handleImport}>
+          <Button 
+            onClick={handleImport}
+            variant="secondary"
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+          >
             <Import className="mr-2 h-4 w-4" /> Import
           </Button>
-          <Button onClick={handleExport}>
+          <Button 
+            onClick={handleExport}
+            variant="secondary"
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+          >
             <ArrowUpDown className="mr-2 h-4 w-4" /> Export
           </Button>
         </div>
