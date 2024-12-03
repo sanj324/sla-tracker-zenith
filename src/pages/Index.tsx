@@ -19,12 +19,12 @@ const Index = () => {
   };
 
   const validateCsvData = (headers: string[], values: string[]) => {
-    const expectedHeaders = ["Bank Name", "Branches", "Mail Status", "Courier Date", "Received in TM", "In Franking", "Status"];
-    const headerString = headers.join(',').toLowerCase();
-    const expectedHeaderString = expectedHeaders.join(',').toLowerCase();
+    const expectedHeaders = ["sr no", "bank name", "branches", "send mail", "courice date", "recvd in tm", "in franking", "resend courice"];
+    const headerString = headers.map(h => h.toLowerCase().trim()).join(',');
+    const expectedHeaderString = expectedHeaders.join(',');
     
-    if (headerString !== expectedHeaderString) {
-      throw new Error("Invalid CSV format. Please ensure the headers match the expected format.");
+    if (!headerString.includes("bank name")) {
+      throw new Error("Invalid CSV format. CSV must contain at least the 'Bank Name' column.");
     }
   };
 
@@ -40,33 +40,40 @@ const Index = () => {
           try {
             const csvText = event.target?.result as string;
             const lines = csvText.split('\n').map(line => line.trim()).filter(line => line);
-            const headers = lines[0].split(',').map(header => header.trim());
+            const headers = lines[0].split(',').map(header => header.trim().toLowerCase());
             
             validateCsvData(headers, lines[1]?.split(',') || []);
             
+            const bankNameIndex = headers.findIndex(h => h.includes('bank name'));
+            const branchesIndex = headers.findIndex(h => h.includes('branches'));
+            const mailStatusIndex = headers.findIndex(h => h.includes('send mail'));
+            const courierDateIndex = headers.findIndex(h => h.includes('courice date'));
+            const receivedIndex = headers.findIndex(h => h.includes('recvd in tm'));
+            const frankingIndex = headers.findIndex(h => h.includes('in franking'));
+
             const importedBanks: Bank[] = lines.slice(1).map((line, index) => {
               const values = line.split(',').map(value => value.trim());
               
               // Only validate bank name as required
-              if (!values[0]) {
+              if (!values[bankNameIndex]) {
                 throw new Error(`Row ${index + 2}: Bank name is required`);
               }
 
               return {
                 id: `imported-${index}`,
-                name: values[0],
-                branches: values[1] ? parseInt(values[1]) : 0,
-                mailStatus: (values[2]?.toLowerCase() === 'done' || values[2]?.toLowerCase() === 'sent') 
+                name: values[bankNameIndex],
+                branches: values[branchesIndex] ? parseInt(values[branchesIndex]) : 0,
+                mailStatus: (values[mailStatusIndex]?.toLowerCase() === 'done' || values[mailStatusIndex]?.toLowerCase() === 'sent') 
                   ? 'sent' 
-                  : values[2]?.toLowerCase() === 'pending' 
+                  : values[mailStatusIndex]?.toLowerCase() === 'pending' 
                   ? 'pending' 
                   : 'failed',
-                courierDate: values[3] || null,
-                receivedInTM: values[4]?.toLowerCase() === 'yes' || values[4]?.toLowerCase() === 'true',
-                inFranking: values[5]?.toLowerCase() === 'yes' || values[5]?.toLowerCase() === 'true',
-                status: values[6] ? 
-                  (values[6].toLowerCase() === 'completed' ? 'completed' : 
-                   values[6].toLowerCase() === 'pending' ? 'pending' : 'failed')
+                courierDate: values[courierDateIndex] || null,
+                receivedInTM: values[receivedIndex]?.toLowerCase() === 'yes' || values[receivedIndex]?.toLowerCase() === 'true',
+                inFranking: values[frankingIndex]?.toLowerCase() === 'yes' || values[frankingIndex]?.toLowerCase() === 'true',
+                status: values[mailStatusIndex] ? 
+                  (values[mailStatusIndex].toLowerCase() === 'completed' ? 'completed' : 
+                   values[mailStatusIndex].toLowerCase() === 'pending' ? 'pending' : 'failed')
                   : 'pending'
               };
             });
@@ -100,9 +107,9 @@ const Index = () => {
   };
 
   const handleExport = () => {
-    const headers = ["Bank Name,Branches,Mail Status,Courier Date,Received in TM,In Franking,Status"];
-    const csvData = banks.map(bank => (
-      `${bank.name},${bank.branches || ''},${bank.mailStatus || ''},${bank.courierDate || ''},${bank.receivedInTM || ''},${bank.inFranking || ''},${bank.status || ''}`
+    const headers = ["Sr No,Bank Name,Branches,Send Mail,Courice Date,Recvd in TM,In Franking,Resend Courice"];
+    const csvData = banks.map((bank, index) => (
+      `${index + 1},${bank.name},${bank.branches || ''},${bank.mailStatus || ''},${bank.courierDate || ''},${bank.receivedInTM || ''},${bank.inFranking || ''},`
     ));
     
     const csv = headers.concat(csvData).join('\n');
