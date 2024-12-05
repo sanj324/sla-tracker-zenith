@@ -11,40 +11,40 @@ interface BankTableProps {
 
 const BankTable = ({ banks, onEdit, onDelete }: BankTableProps) => {
   return (
-    <div className="rounded-md border overflow-x-auto">
+    <div className="rounded-md border overflow-x-auto max-w-[100vw]">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Sr No</TableHead>
-            <TableHead>Bank Name</TableHead>
-            <TableHead>Branches</TableHead>
-            <TableHead>Send Mail</TableHead>
-            <TableHead>Courier Date</TableHead>
-            <TableHead>Received in TM</TableHead>
-            <TableHead>In Franking</TableHead>
-            <TableHead>Last Agreement Date</TableHead>
-            <TableHead>New Agreement Date</TableHead>
-            <TableHead>Old Amount</TableHead>
-            <TableHead>New Amount</TableHead>
-            <TableHead>Resend</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead className="whitespace-nowrap">Sr No</TableHead>
+            <TableHead className="whitespace-nowrap">Bank Name</TableHead>
+            <TableHead className="whitespace-nowrap">Branches</TableHead>
+            <TableHead className="whitespace-nowrap">Send Mail</TableHead>
+            <TableHead className="whitespace-nowrap">Courier Date</TableHead>
+            <TableHead className="whitespace-nowrap">Received in TM</TableHead>
+            <TableHead className="whitespace-nowrap">In Franking</TableHead>
+            <TableHead className="whitespace-nowrap">Last Agreement Date</TableHead>
+            <TableHead className="whitespace-nowrap">New Agreement Date</TableHead>
+            <TableHead className="whitespace-nowrap">Old Amount</TableHead>
+            <TableHead className="whitespace-nowrap">New Amount</TableHead>
+            <TableHead className="whitespace-nowrap">Resend</TableHead>
+            <TableHead className="whitespace-nowrap">Status</TableHead>
+            <TableHead className="whitespace-nowrap">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {banks.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={14} className="text-center text-muted-foreground">
+              <TableCell colSpan={14} className="text-center text-muted-foreground p-4">
                 No banks found. Please add some banks or import data.
               </TableCell>
             </TableRow>
           ) : (
             banks.map((bank, index) => (
               <TableRow key={bank.id}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{bank.name}</TableCell>
-                <TableCell>{bank.branches}</TableCell>
-                <TableCell>
+                <TableCell className="whitespace-nowrap">{index + 1}</TableCell>
+                <TableCell className="whitespace-nowrap">{bank.name}</TableCell>
+                <TableCell className="whitespace-nowrap">{bank.branches}</TableCell>
+                <TableCell className="whitespace-nowrap">
                   {bank.mailStatus === "sent" ? (
                     <Mail className="text-green-500" />
                   ) : bank.mailStatus === "pending" ? (
@@ -53,33 +53,33 @@ const BankTable = ({ banks, onEdit, onDelete }: BankTableProps) => {
                     <AlertCircle className="text-red-500" />
                   )}
                 </TableCell>
-                <TableCell>{bank.courierDate || "-"}</TableCell>
-                <TableCell>
+                <TableCell className="whitespace-nowrap">{bank.courierDate || "-"}</TableCell>
+                <TableCell className="whitespace-nowrap">
                   {bank.receivedInTM ? (
                     <CheckSquare className="text-green-500" />
                   ) : (
                     <AlertCircle className="text-yellow-500" />
                   )}
                 </TableCell>
-                <TableCell>
+                <TableCell className="whitespace-nowrap">
                   {bank.inFranking ? (
                     <CheckSquare className="text-green-500" />
                   ) : (
                     <AlertCircle className="text-yellow-500" />
                   )}
                 </TableCell>
-                <TableCell>{bank.lastAgreementDate || "-"}</TableCell>
-                <TableCell>{bank.newAgreementDate || "-"}</TableCell>
-                <TableCell>{bank.oldAmount || "-"}</TableCell>
-                <TableCell>{bank.newAmount || "-"}</TableCell>
-                <TableCell>
+                <TableCell className="whitespace-nowrap">{bank.lastAgreementDate || "-"}</TableCell>
+                <TableCell className="whitespace-nowrap">{bank.newAgreementDate || "-"}</TableCell>
+                <TableCell className="whitespace-nowrap">{bank.oldAmount || "-"}</TableCell>
+                <TableCell className="whitespace-nowrap">{bank.newAmount || "-"}</TableCell>
+                <TableCell className="whitespace-nowrap">
                   {bank.resend ? (
                     <RefreshCw className="text-blue-500" />
                   ) : (
                     "-"
                   )}
                 </TableCell>
-                <TableCell>
+                <TableCell className="whitespace-nowrap">
                   <span
                     className={`px-2 py-1 rounded-full text-xs ${
                       bank.status === "completed"
@@ -92,8 +92,8 @@ const BankTable = ({ banks, onEdit, onDelete }: BankTableProps) => {
                     {bank.status}
                   </span>
                 </TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
+                <TableCell className="whitespace-nowrap">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <Button variant="outline" size="sm" onClick={() => onEdit(bank)}>
                       Edit
                     </Button>

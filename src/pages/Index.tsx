@@ -207,29 +207,37 @@ const Index = () => {
   };
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <h1 className="text-4xl font-bold mb-8 text-center">SLA Tracking System</h1>
-      <p className="text-center text-gray-600 mb-12">Track and manage bank communications efficiently</p>
+    <div className="container mx-auto py-4 px-2 sm:py-8 sm:px-4">
+      <h1 className="text-2xl sm:text-4xl font-bold mb-4 sm:mb-8 text-center">SLA Tracking System</h1>
+      <p className="text-center text-gray-600 mb-6 sm:mb-12 text-sm sm:text-base">Track and manage bank communications efficiently</p>
 
-      <DashboardStatsDisplay stats={stats} />
-      
-      <DashboardActions
-        onImport={handleImport}
-        onExport={handleExport}
-        onClear={handleClearData}
-        onAddBank={() => {
-          setEditingBank(undefined);
-          setFormOpen(true);
-        }}
-      />
+      <div className="space-y-6">
+        <DashboardStatsDisplay stats={stats} />
+        
+        <div className="overflow-hidden">
+          <DashboardActions
+            onImport={handleImport}
+            onExport={handleExport}
+            onClear={handleClearData}
+            onAddBank={() => {
+              setEditingBank(undefined);
+              setFormOpen(true);
+            }}
+          />
+        </div>
 
-      <ReportsSection banks={banks} />
+        <div className="overflow-x-auto">
+          <ReportsSection banks={banks} />
+        </div>
 
-      <BankTable
-        banks={banks}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+        <div className="overflow-x-auto -mx-2 sm:mx-0">
+          <BankTable
+            banks={banks}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        </div>
+      </div>
 
       <BankForm
         open={formOpen}

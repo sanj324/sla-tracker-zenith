@@ -47,10 +47,10 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="w-[95vw] max-w-[425px] h-[90vh] overflow-y-auto sm:h-auto">
         <DialogHeader>
-          <DialogTitle>{initialData ? "Edit Bank" : "Add New Bank"}</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-lg sm:text-xl">{initialData ? "Edit Bank" : "Add New Bank"}</DialogTitle>
+          <DialogDescription className="text-sm">
             {initialData ? "Update bank information" : "Add a new bank to the system"}
           </DialogDescription>
         </DialogHeader>
@@ -236,12 +236,12 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
                 </FormItem>
               )}
             />
-
-            <div className="flex justify-end gap-2">
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            
+            <div className="flex flex-col sm:flex-row justify-end gap-2 pt-4">
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
                 Cancel
               </Button>
-              <Button type="submit">
+              <Button type="submit" className="w-full sm:w-auto">
                 {initialData ? "Update" : "Add"} Bank
               </Button>
             </div>
