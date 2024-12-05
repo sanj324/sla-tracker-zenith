@@ -49,24 +49,11 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
     form.reset();
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "pending":
-        return "text-blue-600";
-      case "completed":
-        return "text-green-600";
-      default:
-        return "text-purple-600";
-    }
-  };
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[800px]">
         <DialogHeader>
-          <DialogTitle className={cn(
-            getStatusColor(initialData?.status || "pending")
-          )}>
+          <DialogTitle>
             {initialData ? "Edit Bank" : "Add New Bank"}
           </DialogTitle>
           <DialogDescription>
@@ -79,10 +66,7 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
               {/* Basic Details Card */}
               <Card className="col-span-1">
                 <CardHeader>
-                  <CardTitle className={cn(
-                    "text-lg flex items-center gap-2",
-                    getStatusColor(initialData?.status || "pending")
-                  )}>
+                  <CardTitle className="text-lg flex items-center gap-2 text-blue-600">
                     <Building2 className="w-5 h-5" />
                     Basic Details
                   </CardTitle>
@@ -124,10 +108,7 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
               {/* Mail Status Card */}
               <Card className="col-span-1">
                 <CardHeader>
-                  <CardTitle className={cn(
-                    "text-lg flex items-center gap-2",
-                    getStatusColor(initialData?.status || "pending")
-                  )}>
+                  <CardTitle className="text-lg flex items-center gap-2 text-purple-600">
                     <Mail className="w-5 h-5" />
                     Mail Status
                   </CardTitle>
@@ -190,10 +171,7 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
               {/* Agreement Details Card */}
               <Card className="col-span-1">
                 <CardHeader>
-                  <CardTitle className={cn(
-                    "text-lg flex items-center gap-2",
-                    getStatusColor(initialData?.status || "pending")
-                  )}>
+                  <CardTitle className="text-lg flex items-center gap-2 text-green-600">
                     <FileCheck className="w-5 h-5" />
                     Agreement Details
                   </CardTitle>
@@ -252,10 +230,7 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
               {/* Amount Details Card */}
               <Card className="col-span-1">
                 <CardHeader>
-                  <CardTitle className={cn(
-                    "text-lg flex items-center gap-2",
-                    getStatusColor(initialData?.status || "pending")
-                  )}>
+                  <CardTitle className="text-lg flex items-center gap-2 text-orange-600">
                     <IndianRupee className="w-5 h-5" />
                     Amount Details
                   </CardTitle>
@@ -303,10 +278,7 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
               {/* Additional Details Card */}
               <Card className="col-span-1 md:col-span-2">
                 <CardHeader>
-                  <CardTitle className={cn(
-                    "text-lg",
-                    getStatusColor(initialData?.status || "pending")
-                  )}>
+                  <CardTitle className="text-lg text-sky-600">
                     Additional Details
                   </CardTitle>
                 </CardHeader>
@@ -366,14 +338,7 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Cancel
               </Button>
-              <Button 
-                type="submit"
-                className={cn(
-                  initialData?.status === "completed" ? "bg-green-500 hover:bg-green-600" :
-                  initialData?.status === "pending" ? "bg-blue-500 hover:bg-blue-600" :
-                  "bg-purple-500 hover:bg-purple-600"
-                )}
-              >
+              <Button type="submit">
                 {initialData ? "Update" : "Add"} Bank
               </Button>
             </div>
