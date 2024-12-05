@@ -38,7 +38,8 @@ const Index = () => {
         oldAmount: bank.oldAmount || 0,
         newAmount: bank.newAmount || 0,
         remarks: bank.remarks || "",
-        addOnAgreement: bank.addOnAgreement || false
+        addOnAgreement: bank.addOnAgreement || false,
+        finishDate: bank.finishDate || null
       }));
       setBanks(fullBanks);
       localStorage.setItem('banks', JSON.stringify(fullBanks));
@@ -90,7 +91,8 @@ const Index = () => {
         oldAmount: data.oldAmount || 0,
         newAmount: data.newAmount || 0,
         remarks: data.remarks || "",
-        addOnAgreement: data.addOnAgreement || false
+        addOnAgreement: data.addOnAgreement || false,
+        finishDate: data.finishDate || null
       };
       const updatedBanks = [...banks, newBank];
       setBanks(updatedBanks);
