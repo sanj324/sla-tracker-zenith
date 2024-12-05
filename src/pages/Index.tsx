@@ -160,6 +160,13 @@ const Index = () => {
     return value === 'yes' || value === 'true' || value === '1' || value === 'done';
   };
 
+  const parseStatus = (status: string): "completed" | "pending" | "failed" => {
+    status = status.toLowerCase().trim();
+    if (status === "done" || status === "completed") return "completed";
+    if (status === "p" || status === "pending") return "pending";
+    return "failed";
+  };
+
   const handleImport = () => {
     const input = document.createElement("input");
     input.type = "file";
@@ -206,15 +213,19 @@ const Index = () => {
                   return null;
                 }
 
-                return {
+                const mailStatus = parseMailStatus(values[mailStatusIndex] || '');
+                // Determine status based on mail status
+                const status = mailStatus === "sent" ? "completed" as const : "pending" as const;
+
+                const bank: Bank = {
                   id: `imported-${Date.now()}-${index}`,
                   name: bankName,
                   branches: parseBranches(values[branchesIndex]),
-                  mailStatus: parseMailStatus(values[mailStatusIndex] || ''),
+                  mailStatus,
                   courierDate: parseDate(values[courierDateIndex] || ''),
                   receivedInTM: parseBoolean(values[receivedIndex] || ''),
                   inFranking: parseBoolean(values[frankingIndex] || ''),
-                  status: values[mailStatusIndex]?.toLowerCase().includes('done') ? 'completed' : 'pending',
+                  status,
                   lastAgreementDate: null,
                   newAgreementDate: null,
                   resendDate: null,
@@ -224,6 +235,8 @@ const Index = () => {
                   addOnAgreement: false,
                   finishDate: parseDate(values[finishDateIndex] || '')
                 };
+
+                return bank;
               })
               .filter((bank): bank is Bank => bank !== null);
 
