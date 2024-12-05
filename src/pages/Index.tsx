@@ -123,18 +123,18 @@ const Index = () => {
   };
 
   const validateCsvData = (headers: string[]) => {
-    const requiredHeader = "bank name";
-    // Convert all headers to lowercase for case-insensitive comparison
-    const headerExists = headers.some(header => 
-      header.toLowerCase().trim() === requiredHeader ||
-      header.toLowerCase().trim() === "bankname" ||
-      header.toLowerCase().trim() === "bank_name" ||
-      header.toLowerCase().trim() === "bank-name"
+    console.log('Headers received:', headers); // Debug log
+    // Look for any variation of "bank name" in the headers
+    const bankNameHeader = headers.find(header => 
+      header.toLowerCase().trim().replace(/[\s_-]/g, '') === 'bankname'
     );
     
-    if (!headerExists) {
-      throw new Error("Invalid CSV format. CSV must contain the 'Bank Name' column.");
+    console.log('Bank name header found:', bankNameHeader); // Debug log
+    
+    if (!bankNameHeader) {
+      throw new Error("Invalid CSV format. CSV must contain a 'Bank Name' column.");
     }
+    return bankNameHeader;
   };
 
   const parseMailStatus = (status: string): "sent" | "pending" | "failed" => {
@@ -157,7 +157,7 @@ const Index = () => {
 
   const parseBoolean = (value: string): boolean => {
     value = value.toLowerCase().trim();
-    return value === 'yes' || value === 'true' || value === '1';
+    return value === 'yes' || value === 'true' || value === '1' || value === 'done';
   };
 
   const handleImport = () => {
@@ -172,16 +172,28 @@ const Index = () => {
           try {
             const csvText = event.target?.result as string;
             const lines = csvText.split('\n').map(line => line.trim()).filter(line => line);
-            const headers = lines[0].split(',').map(header => header.trim().toLowerCase());
+            const headers = lines[0].split(',').map(header => header.trim());
             
-            validateCsvData(headers);
+            console.log('Processing CSV with headers:', headers); // Debug log
             
-            const bankNameIndex = headers.findIndex(h => h.includes('bank name'));
-            const branchesIndex = headers.findIndex(h => h.includes('branches'));
-            const mailStatusIndex = headers.findIndex(h => h.includes('send mail'));
-            const courierDateIndex = headers.findIndex(h => h.includes('courice date') || h.includes('courier date'));
-            const receivedIndex = headers.findIndex(h => h.includes('recvd in tm') || h.includes('received in tm'));
-            const frankingIndex = headers.findIndex(h => h.includes('in franking'));
+            const bankNameHeader = validateCsvData(headers);
+            const bankNameIndex = headers.indexOf(bankNameHeader);
+            const branchesIndex = headers.findIndex(h => h.toLowerCase().includes('branches'));
+            const mailStatusIndex = headers.findIndex(h => h.toLowerCase().includes('send mail'));
+            const courierDateIndex = headers.findIndex(h => h.toLowerCase().includes('courice date') || h.toLowerCase().includes('courier date'));
+            const receivedIndex = headers.findIndex(h => h.toLowerCase().includes('recvd in tm') || h.toLowerCase().includes('received in tm'));
+            const frankingIndex = headers.findIndex(h => h.toLowerCase().includes('in franking'));
+            const finishDateIndex = headers.findIndex(h => h.toLowerCase().includes('finish date'));
+
+            console.log('Column indices:', {
+              bankNameIndex,
+              branchesIndex,
+              mailStatusIndex,
+              courierDateIndex,
+              receivedIndex,
+              frankingIndex,
+              finishDateIndex
+            }); // Debug log
 
             const importedBanks: Bank[] = lines.slice(1)
               .filter(line => line.trim() !== '')
@@ -195,7 +207,7 @@ const Index = () => {
                 }
 
                 return {
-                  id: `imported-${index}`,
+                  id: `imported-${Date.now()}-${index}`,
                   name: bankName,
                   branches: parseBranches(values[branchesIndex]),
                   mailStatus: parseMailStatus(values[mailStatusIndex] || ''),
@@ -209,10 +221,13 @@ const Index = () => {
                   oldAmount: 0,
                   newAmount: 0,
                   remarks: "",
-                  addOnAgreement: false
+                  addOnAgreement: false,
+                  finishDate: parseDate(values[finishDateIndex] || '')
                 };
               })
               .filter((bank): bank is Bank => bank !== null);
+
+            console.log('Imported banks:', importedBanks); // Debug log
 
             setBanks(prevBanks => [...prevBanks, ...importedBanks]);
             toast({
