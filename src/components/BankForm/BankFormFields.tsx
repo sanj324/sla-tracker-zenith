@@ -12,7 +12,7 @@ interface BankFormFieldsProps {
 
 export const BankFormFields = ({ form }: BankFormFieldsProps) => {
   return (
-    <div className="space-y-6 max-w-2xl mx-auto">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {/* Basic Information Section */}
       <Card className="p-6 bg-gradient-to-r from-blue-50 to-blue-100 border-blue-200">
         <h3 className="font-semibold mb-4 text-blue-900">Basic Information</h3>
