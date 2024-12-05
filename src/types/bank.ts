@@ -7,6 +7,10 @@ export interface Bank {
   receivedInTM: boolean;
   inFranking: boolean;
   status: "completed" | "pending" | "failed";
+  lastAgreementDate: string | null;
+  oldAmount: number | null;
+  newAmount: number | null;
+  resend: boolean;
 }
 
 export interface DashboardStats {

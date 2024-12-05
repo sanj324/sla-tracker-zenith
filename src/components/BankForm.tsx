@@ -23,7 +23,11 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
       courierDate: null,
       receivedInTM: false,
       inFranking: false,
-      status: "pending"
+      status: "pending",
+      lastAgreementDate: null,
+      oldAmount: null,
+      newAmount: null,
+      resend: false
     }
   });
 
@@ -145,6 +149,76 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="lastAgreementDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Last Agreement Date</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="date" 
+                      {...field} 
+                      value={field.value || ''} 
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="oldAmount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Old Amount</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="number" 
+                      {...field} 
+                      onChange={e => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                      value={field.value || ''}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="newAmount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>New Amount</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="number" 
+                      {...field} 
+                      onChange={e => field.onChange(e.target.value ? Number(e.target.value) : null)}
+                      value={field.value || ''}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="resend"
+              render={({ field }) => (
+                <FormItem className="flex items-center gap-2">
+                  <FormControl>
+                    <Checkbox 
+                      checked={field.value} 
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormLabel>Resend Required</FormLabel>
+                </FormItem>
+              )}
+            />
+
             <div className="flex justify-end gap-2">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Cancel

@@ -1,7 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Bank } from "@/types/bank";
 import { Button } from "@/components/ui/button";
-import { Mail, AlertCircle, CheckSquare } from "lucide-react";
+import { Mail, AlertCircle, CheckSquare, RefreshCw } from "lucide-react";
 
 interface BankTableProps {
   banks: Bank[];
@@ -11,7 +11,7 @@ interface BankTableProps {
 
 const BankTable = ({ banks, onEdit, onDelete }: BankTableProps) => {
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>
@@ -22,6 +22,10 @@ const BankTable = ({ banks, onEdit, onDelete }: BankTableProps) => {
             <TableHead>Courier Date</TableHead>
             <TableHead>Received in TM</TableHead>
             <TableHead>In Franking</TableHead>
+            <TableHead>Last Agreement Date</TableHead>
+            <TableHead>Old Amount</TableHead>
+            <TableHead>New Amount</TableHead>
+            <TableHead>Resend</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
@@ -29,7 +33,7 @@ const BankTable = ({ banks, onEdit, onDelete }: BankTableProps) => {
         <TableBody>
           {banks.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={9} className="text-center text-muted-foreground">
+              <TableCell colSpan={13} className="text-center text-muted-foreground">
                 No banks found. Please add some banks or import data.
               </TableCell>
             </TableRow>
@@ -61,6 +65,16 @@ const BankTable = ({ banks, onEdit, onDelete }: BankTableProps) => {
                     <CheckSquare className="text-green-500" />
                   ) : (
                     <AlertCircle className="text-yellow-500" />
+                  )}
+                </TableCell>
+                <TableCell>{bank.lastAgreementDate || "-"}</TableCell>
+                <TableCell>{bank.oldAmount || "-"}</TableCell>
+                <TableCell>{bank.newAmount || "-"}</TableCell>
+                <TableCell>
+                  {bank.resend ? (
+                    <RefreshCw className="text-blue-500" />
+                  ) : (
+                    "-"
                   )}
                 </TableCell>
                 <TableCell>
