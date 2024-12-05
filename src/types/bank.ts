@@ -12,6 +12,7 @@ export interface Bank {
   oldAmount: number | null;
   newAmount: number | null;
   resend: boolean;
+  resendDate: string | null;
   remarks: string | null;
   addonAgreementDate: string | null;
 }

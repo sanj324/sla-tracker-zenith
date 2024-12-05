@@ -204,6 +204,24 @@ export const BankFormFields = ({ form }: BankFormFieldsProps) => {
           </FormItem>
         )}
       />
+      
+      <FormField
+        control={form.control}
+        name="resendDate"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Resend Date</FormLabel>
+            <FormControl>
+              <Input 
+                type="date" 
+                {...field} 
+                value={field.value || ''} 
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+      
       <FormField
         control={form.control}
         name="resend"

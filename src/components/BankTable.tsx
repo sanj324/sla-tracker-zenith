@@ -29,6 +29,7 @@ const BankTable = ({ banks, onEdit, onDelete }: BankTableProps) => {
             <TableHead className="whitespace-nowrap">New Amount</TableHead>
             <TableHead className="whitespace-nowrap">Remarks</TableHead>
             <TableHead className="whitespace-nowrap">Resend</TableHead>
+            <TableHead className="whitespace-nowrap">Resend Date</TableHead>
             <TableHead className="whitespace-nowrap">Status</TableHead>
             <TableHead className="whitespace-nowrap">Actions</TableHead>
           </TableRow>
@@ -36,7 +37,7 @@ const BankTable = ({ banks, onEdit, onDelete }: BankTableProps) => {
         <TableBody>
           {banks.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={16} className="text-center text-muted-foreground p-4">
+              <TableCell colSpan={17} className="text-center text-muted-foreground p-4">
                 No banks found. Please add some banks or import data.
               </TableCell>
             </TableRow>
@@ -85,6 +86,7 @@ const BankTable = ({ banks, onEdit, onDelete }: BankTableProps) => {
                     "-"
                   )}
                 </TableCell>
+                <TableCell className="whitespace-nowrap">{bank.resendDate || "-"}</TableCell>
                 <TableCell className="whitespace-nowrap">
                   <span
                     className={`px-2 py-1 rounded-full text-xs ${

@@ -51,6 +51,7 @@ const Index = () => {
         oldAmount: data.oldAmount || null,
         newAmount: data.newAmount || null,
         resend: data.resend || false,
+        resendDate: data.resendDate || null,
         remarks: data.remarks || null
       };
       setBanks([...banks, newBank]);
@@ -131,6 +132,7 @@ const Index = () => {
             const courierDateIndex = headers.findIndex(h => h.includes('courice date') || h.includes('courier date'));
             const receivedIndex = headers.findIndex(h => h.includes('recvd in tm') || h.includes('received in tm'));
             const frankingIndex = headers.findIndex(h => h.includes('in franking'));
+            const resendDateIndex = headers.findIndex(h => h.includes('resend date'));
 
             const importedBanks: Bank[] = lines.slice(1)
               .filter(line => line.trim() !== '')
@@ -151,6 +153,7 @@ const Index = () => {
                   courierDate: parseDate(values[courierDateIndex] || ''),
                   receivedInTM: parseBoolean(values[receivedIndex] || ''),
                   inFranking: parseBoolean(values[frankingIndex] || ''),
+                  resendDate: parseDate(values[resendDateIndex] || ''),
                   status: values[mailStatusIndex]?.toLowerCase().includes('done') ? 'completed' : 'pending'
                 };
               })
@@ -186,9 +189,9 @@ const Index = () => {
   };
 
   const handleExport = () => {
-    const headers = ["Sr No,Bank Name,Branches,Send Mail,Courice Date,Recvd in TM,In Franking,Resend Courice"];
+    const headers = ["Sr No,Bank Name,Branches,Send Mail,Courice Date,Recvd in TM,In Franking,Resend Date"];
     const csvData = banks.map((bank, index) => (
-      `${index + 1},${bank.name},${bank.branches || ''},${bank.mailStatus || ''},${bank.courierDate || ''},${bank.receivedInTM || ''},${bank.inFranking || ''},`
+      `${index + 1},${bank.name},${bank.branches || ''},${bank.mailStatus || ''},${bank.courierDate || ''},${bank.receivedInTM || ''},${bank.inFranking || ''},${bank.resendDate || ''}`
     ));
     
     const csv = headers.concat(csvData).join('\n');

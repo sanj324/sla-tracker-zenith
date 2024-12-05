@@ -29,7 +29,8 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
       newAmount: null,
       resend: false,
       remarks: "",
-      addonAgreementDate: null
+      addonAgreementDate: null,
+      resendDate: null
     }
   });
 
