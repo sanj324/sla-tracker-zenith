@@ -27,11 +27,7 @@ const Index = () => {
       // Update existing bank
       setBanks(banks.map(bank => 
         bank.id === editingBank.id 
-          ? { 
-              ...bank, 
-              ...data,
-              resendDate: data.resendDate || null // Ensure resendDate is properly handled
-            }
+          ? { ...bank, ...data }
           : bank
       ));
       toast({
@@ -56,13 +52,7 @@ const Index = () => {
         newAmount: data.newAmount || null,
         resend: data.resend || false,
         resendDate: data.resendDate || null,
-        remarks: data.remarks || null,
-        // Add the new properties
-        receivedDate: data.receivedDate || null,
-        frankingDate: data.frankingDate || null,
-        processingStatus: data.processingStatus || "pending",
-        agreementStatus: data.agreementStatus || "pending",
-        paymentStatus: data.paymentStatus || "pending"
+        remarks: data.remarks || null
       };
       setBanks([...banks, newBank]);
       toast({
@@ -164,20 +154,7 @@ const Index = () => {
                   receivedInTM: parseBoolean(values[receivedIndex] || ''),
                   inFranking: parseBoolean(values[frankingIndex] || ''),
                   resendDate: parseDate(values[resendDateIndex] || ''),
-                  status: values[mailStatusIndex]?.toLowerCase().includes('done') ? 'completed' : 'pending',
-                  lastAgreementDate: null,
-                  newAgreementDate: null,
-                  addonAgreementDate: null,
-                  oldAmount: null,
-                  newAmount: null,
-                  resend: false,
-                  remarks: null,
-                  // Add the new properties for imported banks
-                  receivedDate: null,
-                  frankingDate: null,
-                  processingStatus: "pending",
-                  agreementStatus: "pending",
-                  paymentStatus: "pending"
+                  status: values[mailStatusIndex]?.toLowerCase().includes('done') ? 'completed' : 'pending'
                 };
               })
               .filter((bank): bank is Bank => bank !== null);
