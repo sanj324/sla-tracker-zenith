@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Bank, DashboardStats } from "@/types/bank";
 import BankTable from "@/components/BankTable";
 import DashboardStatsDisplay from "@/components/DashboardStats";
@@ -7,6 +7,7 @@ import BankForm from "@/components/BankForm";
 import ReportsSection from "@/components/ReportsSection";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
+import { initialBanks } from "@/data/initialBanks";
 
 const Index = () => {
   const [banks, setBanks] = useState<Bank[]>([]);
@@ -14,6 +15,40 @@ const Index = () => {
   const [editingBank, setEditingBank] = useState<Bank | undefined>();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<"pending" | "completed" | "all">("pending");
+
+  // Load initial banks on component mount
+  useEffect(() => {
+    const storedBanks = localStorage.getItem('banks');
+    if (storedBanks) {
+      setBanks(JSON.parse(storedBanks));
+    } else {
+      // Convert partial banks to full banks with default values
+      const fullBanks = initialBanks.map(bank => ({
+        id: bank.id || `bank-${Date.now()}`,
+        name: bank.name || "",
+        branches: bank.branches || 0,
+        mailStatus: bank.mailStatus || "pending",
+        courierDate: bank.courierDate || null,
+        receivedInTM: bank.receivedInTM || false,
+        inFranking: bank.inFranking || false,
+        status: bank.status || "pending",
+        lastAgreementDate: bank.lastAgreementDate || null,
+        newAgreementDate: bank.newAgreementDate || null,
+        resendDate: bank.resendDate || null,
+        oldAmount: bank.oldAmount || 0,
+        newAmount: bank.newAmount || 0,
+        remarks: bank.remarks || "",
+        addOnAgreement: bank.addOnAgreement || false
+      }));
+      setBanks(fullBanks);
+      localStorage.setItem('banks', JSON.stringify(fullBanks));
+    }
+  }, []);
+
+  // Save banks to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('banks', JSON.stringify(banks));
+  }, [banks]);
 
   const stats: DashboardStats = {
     totalBanks: banks.length,
@@ -27,17 +62,19 @@ const Index = () => {
   const handleAddEditBank = (data: Partial<Bank>) => {
     if (editingBank) {
       // Update existing bank
-      setBanks(banks.map(bank => 
+      const updatedBanks = banks.map(bank => 
         bank.id === editingBank.id 
           ? { ...bank, ...data }
           : bank
-      ));
+      );
+      setBanks(updatedBanks);
+      localStorage.setItem('banks', JSON.stringify(updatedBanks));
       toast({
         title: "Bank updated",
         description: "Bank information has been updated successfully.",
       });
     } else {
-      // Add new bank with all required fields
+      // Add new bank
       const newBank: Bank = {
         id: `bank-${Date.now()}`,
         name: data.name || "",
@@ -55,7 +92,9 @@ const Index = () => {
         remarks: data.remarks || "",
         addOnAgreement: data.addOnAgreement || false
       };
-      setBanks([...banks, newBank]);
+      const updatedBanks = [...banks, newBank];
+      setBanks(updatedBanks);
+      localStorage.setItem('banks', JSON.stringify(updatedBanks));
       toast({
         title: "Bank added",
         description: "New bank has been added successfully.",
@@ -64,19 +103,21 @@ const Index = () => {
     setEditingBank(undefined);
   };
 
-  const handleEdit = (bank: Bank) => {
-    setEditingBank(bank);
-    setFormOpen(true);
-  };
-
   const handleDelete = (id: string) => {
     if (window.confirm("Are you sure you want to delete this bank?")) {
-      setBanks(banks.filter((bank) => bank.id !== id));
+      const updatedBanks = banks.filter((bank) => bank.id !== id);
+      setBanks(updatedBanks);
+      localStorage.setItem('banks', JSON.stringify(updatedBanks));
       toast({
         title: "Bank deleted",
         description: "The bank has been deleted successfully.",
       });
     }
+  };
+
+  const handleEdit = (bank: Bank) => {
+    setEditingBank(bank);
+    setFormOpen(true);
   };
 
   const validateCsvData = (headers: string[]) => {
