@@ -38,7 +38,13 @@ const ReportsSection = ({ banks }: ReportsSectionProps) => {
       "Remarks",
       "Resend",
       "Resend Date",
-      "Status"
+      "Status",
+      "Mail Status",
+      "Received Date",
+      "Franking Date",
+      "Processing Status",
+      "Agreement Status",
+      "Payment Status"
     ].join(',');
 
     const csvData = filteredBanks.map((bank, index) => [
@@ -57,7 +63,13 @@ const ReportsSection = ({ banks }: ReportsSectionProps) => {
       bank.remarks || '',
       bank.resend ? 'Yes' : 'No',
       bank.resendDate || '',
-      bank.status || ''
+      bank.status || '',
+      bank.mailStatus || '',
+      bank.receivedDate || '',
+      bank.frankingDate || '',
+      bank.processingStatus || '',
+      bank.agreementStatus || '',
+      bank.paymentStatus || ''
     ].join(','));
     
     const csv = [headers, ...csvData].join('\n');
