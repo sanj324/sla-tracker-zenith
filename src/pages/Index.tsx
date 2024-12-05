@@ -35,7 +35,7 @@ const Index = () => {
         description: "Bank information has been updated successfully.",
       });
     } else {
-      // Add new bank
+      // Add new bank with all required fields
       const newBank: Bank = {
         id: `bank-${Date.now()}`,
         name: data.name || "",
@@ -45,6 +45,13 @@ const Index = () => {
         receivedInTM: data.receivedInTM || false,
         inFranking: data.inFranking || false,
         status: data.status || "pending",
+        lastAgreementDate: data.lastAgreementDate || null,
+        newAgreementDate: data.newAgreementDate || null,
+        resendDate: data.resendDate || null,
+        oldAmount: data.oldAmount || 0,
+        newAmount: data.newAmount || 0,
+        remarks: data.remarks || "",
+        addOnAgreement: data.addOnAgreement || false
       };
       setBanks([...banks, newBank]);
       toast({
@@ -144,7 +151,14 @@ const Index = () => {
                   courierDate: parseDate(values[courierDateIndex] || ''),
                   receivedInTM: parseBoolean(values[receivedIndex] || ''),
                   inFranking: parseBoolean(values[frankingIndex] || ''),
-                  status: values[mailStatusIndex]?.toLowerCase().includes('done') ? 'completed' : 'pending'
+                  status: values[mailStatusIndex]?.toLowerCase().includes('done') ? 'completed' : 'pending',
+                  lastAgreementDate: null,
+                  newAgreementDate: null,
+                  resendDate: null,
+                  oldAmount: 0,
+                  newAmount: 0,
+                  remarks: "",
+                  addOnAgreement: false
                 };
               })
               .filter((bank): bank is Bank => bank !== null);
