@@ -12,9 +12,9 @@ interface BankFormFieldsProps {
 
 export const BankFormFields = ({ form }: BankFormFieldsProps) => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-2xl mx-auto">
       {/* Basic Information Section */}
-      <Card className="p-4 bg-blue-50">
+      <Card className="p-6 bg-gradient-to-r from-blue-50 to-blue-100 border-blue-200">
         <h3 className="font-semibold mb-4 text-blue-900">Basic Information</h3>
         <div className="space-y-4">
           <FormField
@@ -22,9 +22,9 @@ export const BankFormFields = ({ form }: BankFormFieldsProps) => {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Bank Name</FormLabel>
+                <FormLabel className="text-blue-800">Bank Name</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input {...field} className="bg-white" />
                 </FormControl>
               </FormItem>
             )}
@@ -34,13 +34,14 @@ export const BankFormFields = ({ form }: BankFormFieldsProps) => {
             name="branches"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Branches</FormLabel>
+                <FormLabel className="text-blue-800">Branches</FormLabel>
                 <FormControl>
                   <Input 
                     type="number" 
                     {...field} 
                     onChange={e => field.onChange(Number(e.target.value))}
                     value={field.value || ''}
+                    className="bg-white"
                   />
                 </FormControl>
               </FormItem>
@@ -50,7 +51,7 @@ export const BankFormFields = ({ form }: BankFormFieldsProps) => {
       </Card>
 
       {/* Mail Status Section */}
-      <Card className="p-4 bg-purple-50">
+      <Card className="p-6 bg-gradient-to-r from-purple-50 to-purple-100 border-purple-200">
         <h3 className="font-semibold mb-4 text-purple-900">Mail & Courier Status</h3>
         <div className="space-y-4">
           <FormField
@@ -58,10 +59,10 @@ export const BankFormFields = ({ form }: BankFormFieldsProps) => {
             name="mailStatus"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Mail Status</FormLabel>
+                <FormLabel className="text-purple-800">Mail Status</FormLabel>
                 <FormControl>
                   <select 
-                    className="w-full p-2 border rounded"
+                    className="w-full p-2 border rounded bg-white"
                     {...field}
                   >
                     <option value="pending">Pending</option>
@@ -77,12 +78,13 @@ export const BankFormFields = ({ form }: BankFormFieldsProps) => {
             name="courierDate"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Courier Date</FormLabel>
+                <FormLabel className="text-purple-800">Courier Date</FormLabel>
                 <FormControl>
                   <Input 
                     type="date" 
                     {...field} 
                     value={field.value || ''} 
+                    className="bg-white"
                   />
                 </FormControl>
               </FormItem>
@@ -92,7 +94,7 @@ export const BankFormFields = ({ form }: BankFormFieldsProps) => {
       </Card>
 
       {/* Processing Status Section */}
-      <Card className="p-4 bg-green-50">
+      <Card className="p-6 bg-gradient-to-r from-green-50 to-green-100 border-green-200">
         <h3 className="font-semibold mb-4 text-green-900">Processing Status</h3>
         <div className="space-y-4">
           <FormField
@@ -106,7 +108,7 @@ export const BankFormFields = ({ form }: BankFormFieldsProps) => {
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
-                <FormLabel>Received in TM</FormLabel>
+                <FormLabel className="text-green-800">Received in TM</FormLabel>
               </FormItem>
             )}
           />
@@ -121,7 +123,7 @@ export const BankFormFields = ({ form }: BankFormFieldsProps) => {
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
-                <FormLabel>In Franking</FormLabel>
+                <FormLabel className="text-green-800">In Franking</FormLabel>
               </FormItem>
             )}
           />
@@ -129,7 +131,7 @@ export const BankFormFields = ({ form }: BankFormFieldsProps) => {
       </Card>
 
       {/* Agreement Dates Section */}
-      <Card className="p-4 bg-amber-50">
+      <Card className="p-6 bg-gradient-to-r from-amber-50 to-amber-100 border-amber-200">
         <h3 className="font-semibold mb-4 text-amber-900">Agreement Dates</h3>
         <div className="space-y-4">
           <FormField
@@ -137,12 +139,13 @@ export const BankFormFields = ({ form }: BankFormFieldsProps) => {
             name="lastAgreementDate"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Last Agreement Date</FormLabel>
+                <FormLabel className="text-amber-800">Last Agreement Date</FormLabel>
                 <FormControl>
                   <Input 
                     type="date" 
                     {...field} 
                     value={field.value || ''} 
+                    className="bg-white"
                   />
                 </FormControl>
               </FormItem>
@@ -153,12 +156,13 @@ export const BankFormFields = ({ form }: BankFormFieldsProps) => {
             name="newAgreementDate"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>New Agreement Date</FormLabel>
+                <FormLabel className="text-amber-800">New Agreement Date</FormLabel>
                 <FormControl>
                   <Input 
                     type="date" 
                     {...field} 
                     value={field.value || ''} 
+                    className="bg-white"
                   />
                 </FormControl>
               </FormItem>
@@ -169,12 +173,13 @@ export const BankFormFields = ({ form }: BankFormFieldsProps) => {
             name="addonAgreementDate"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Addon Agreement Date</FormLabel>
+                <FormLabel className="text-amber-800">Addon Agreement Date</FormLabel>
                 <FormControl>
                   <Input 
                     type="date" 
                     {...field} 
                     value={field.value || ''} 
+                    className="bg-white"
                   />
                 </FormControl>
               </FormItem>
@@ -184,7 +189,7 @@ export const BankFormFields = ({ form }: BankFormFieldsProps) => {
       </Card>
 
       {/* Amount Details Section */}
-      <Card className="p-4 bg-rose-50">
+      <Card className="p-6 bg-gradient-to-r from-rose-50 to-rose-100 border-rose-200">
         <h3 className="font-semibold mb-4 text-rose-900">Amount Details</h3>
         <div className="space-y-4">
           <FormField
@@ -192,13 +197,14 @@ export const BankFormFields = ({ form }: BankFormFieldsProps) => {
             name="oldAmount"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Old Amount</FormLabel>
+                <FormLabel className="text-rose-800">Old Amount</FormLabel>
                 <FormControl>
                   <Input 
                     type="number" 
                     {...field} 
                     onChange={e => field.onChange(e.target.value ? Number(e.target.value) : null)}
                     value={field.value || ''}
+                    className="bg-white"
                   />
                 </FormControl>
               </FormItem>
@@ -209,13 +215,14 @@ export const BankFormFields = ({ form }: BankFormFieldsProps) => {
             name="newAmount"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>New Amount</FormLabel>
+                <FormLabel className="text-rose-800">New Amount</FormLabel>
                 <FormControl>
                   <Input 
                     type="number" 
                     {...field} 
                     onChange={e => field.onChange(e.target.value ? Number(e.target.value) : null)}
                     value={field.value || ''}
+                    className="bg-white"
                   />
                 </FormControl>
               </FormItem>
@@ -225,7 +232,7 @@ export const BankFormFields = ({ form }: BankFormFieldsProps) => {
       </Card>
 
       {/* Additional Information Section */}
-      <Card className="p-4 bg-cyan-50">
+      <Card className="p-6 bg-gradient-to-r from-cyan-50 to-cyan-100 border-cyan-200">
         <h3 className="font-semibold mb-4 text-cyan-900">Additional Information</h3>
         <div className="space-y-4">
           <FormField
@@ -233,12 +240,12 @@ export const BankFormFields = ({ form }: BankFormFieldsProps) => {
             name="remarks"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Remarks</FormLabel>
+                <FormLabel className="text-cyan-800">Remarks</FormLabel>
                 <FormControl>
                   <Textarea 
                     {...field} 
                     value={field.value || ''} 
-                    className="min-h-[100px]"
+                    className="min-h-[100px] bg-white"
                   />
                 </FormControl>
               </FormItem>
@@ -250,12 +257,13 @@ export const BankFormFields = ({ form }: BankFormFieldsProps) => {
             name="resendDate"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Resend Date</FormLabel>
+                <FormLabel className="text-cyan-800">Resend Date</FormLabel>
                 <FormControl>
                   <Input 
                     type="date" 
                     {...field} 
                     value={field.value || ''} 
+                    className="bg-white"
                   />
                 </FormControl>
               </FormItem>
@@ -273,7 +281,7 @@ export const BankFormFields = ({ form }: BankFormFieldsProps) => {
                     onCheckedChange={field.onChange}
                   />
                 </FormControl>
-                <FormLabel>Resend Required</FormLabel>
+                <FormLabel className="text-cyan-800">Resend Required</FormLabel>
               </FormItem>
             )}
           />

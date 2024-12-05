@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { Bank } from "@/types/bank";
 import { BankFormFields } from "./BankFormFields";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface BankFormProps {
   open: boolean;
@@ -30,7 +31,12 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
       resend: false,
       remarks: "",
       addonAgreementDate: null,
-      resendDate: null
+      resendDate: null,
+      receivedDate: null,
+      frankingDate: null,
+      processingStatus: "pending",
+      agreementStatus: "pending",
+      paymentStatus: "pending"
     }
   });
 
@@ -48,26 +54,28 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[95vw] max-w-[425px] h-[90vh] overflow-y-auto sm:h-auto">
+      <DialogContent className="w-[95vw] max-w-3xl h-[90vh]">
         <DialogHeader>
           <DialogTitle className="text-lg sm:text-xl">{initialData ? "Edit Bank" : "Add New Bank"}</DialogTitle>
           <DialogDescription className="text-sm">
             {initialData ? "Update bank information" : "Add a new bank to the system"}
           </DialogDescription>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-            <BankFormFields form={form} />
-            <div className="flex flex-col sm:flex-row justify-end gap-2 pt-4">
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
-                Cancel
-              </Button>
-              <Button type="submit" className="w-full sm:w-auto">
-                {initialData ? "Update" : "Add"} Bank
-              </Button>
-            </div>
-          </form>
-        </Form>
+        <ScrollArea className="h-[calc(90vh-10rem)] px-4">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+              <BankFormFields form={form} />
+              <div className="flex flex-col sm:flex-row justify-end gap-2 pt-4 sticky bottom-0 bg-white p-4 shadow-lg">
+                <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
+                  Cancel
+                </Button>
+                <Button type="submit" className="w-full sm:w-auto">
+                  {initialData ? "Update" : "Add"} Bank
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
