@@ -27,7 +27,11 @@ const Index = () => {
       // Update existing bank
       setBanks(banks.map(bank => 
         bank.id === editingBank.id 
-          ? { ...bank, ...data }
+          ? { 
+              ...bank, 
+              ...data,
+              resendDate: data.resendDate || null // Ensure resendDate is properly handled
+            }
           : bank
       ));
       toast({
