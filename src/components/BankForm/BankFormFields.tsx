@@ -5,6 +5,7 @@ import { UseFormReturn } from "react-hook-form";
 import { Bank } from "@/types/bank";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface BankFormFieldsProps {
   form: UseFormReturn<Partial<Bank>>;
@@ -60,16 +61,21 @@ export const BankFormFields = ({ form }: BankFormFieldsProps) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-sm font-medium">Status</FormLabel>
-                <FormControl>
-                  <select 
-                    className="w-full p-2 border rounded-md focus:ring-2 focus:ring-purple-500"
-                    {...field}
-                  >
-                    <option value="pending">Pending</option>
-                    <option value="sent">Sent</option>
-                    <option value="failed">Failed</option>
-                  </select>
-                </FormControl>
+                <Select 
+                  onValueChange={field.onChange} 
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="sent">Sent</SelectItem>
+                    <SelectItem value="failed">Failed</SelectItem>
+                  </SelectContent>
+                </Select>
               </FormItem>
             )}
           />

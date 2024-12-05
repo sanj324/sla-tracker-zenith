@@ -77,7 +77,7 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
                 >
                   Cancel
                 </Button>
-                <Button type="submit">
+                <Button type="submit" className="bg-primary hover:bg-primary/90">
                   {initialData ? "Update" : "Add"} Bank
                 </Button>
               </div>
