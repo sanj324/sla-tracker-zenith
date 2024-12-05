@@ -8,6 +8,7 @@ export interface Bank {
   inFranking: boolean;
   status: "completed" | "pending" | "failed";
   lastAgreementDate: string | null;
+  newAgreementDate: string | null;
   oldAmount: number | null;
   newAmount: number | null;
   resend: boolean;

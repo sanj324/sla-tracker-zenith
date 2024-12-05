@@ -25,6 +25,7 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
       inFranking: false,
       status: "pending",
       lastAgreementDate: null,
+      newAgreementDate: null,
       oldAmount: null,
       newAmount: null,
       resend: false
@@ -156,6 +157,23 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Last Agreement Date</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="date" 
+                      {...field} 
+                      value={field.value || ''} 
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="newAgreementDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>New Agreement Date</FormLabel>
                   <FormControl>
                     <Input 
                       type="date" 

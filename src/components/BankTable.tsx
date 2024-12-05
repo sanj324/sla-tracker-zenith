@@ -23,6 +23,7 @@ const BankTable = ({ banks, onEdit, onDelete }: BankTableProps) => {
             <TableHead>Received in TM</TableHead>
             <TableHead>In Franking</TableHead>
             <TableHead>Last Agreement Date</TableHead>
+            <TableHead>New Agreement Date</TableHead>
             <TableHead>Old Amount</TableHead>
             <TableHead>New Amount</TableHead>
             <TableHead>Resend</TableHead>
@@ -33,7 +34,7 @@ const BankTable = ({ banks, onEdit, onDelete }: BankTableProps) => {
         <TableBody>
           {banks.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={13} className="text-center text-muted-foreground">
+              <TableCell colSpan={14} className="text-center text-muted-foreground">
                 No banks found. Please add some banks or import data.
               </TableCell>
             </TableRow>
@@ -68,6 +69,7 @@ const BankTable = ({ banks, onEdit, onDelete }: BankTableProps) => {
                   )}
                 </TableCell>
                 <TableCell>{bank.lastAgreementDate || "-"}</TableCell>
+                <TableCell>{bank.newAgreementDate || "-"}</TableCell>
                 <TableCell>{bank.oldAmount || "-"}</TableCell>
                 <TableCell>{bank.newAmount || "-"}</TableCell>
                 <TableCell>

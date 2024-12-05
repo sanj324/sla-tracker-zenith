@@ -46,6 +46,7 @@ const Index = () => {
         inFranking: data.inFranking || false,
         status: data.status || "pending",
         lastAgreementDate: data.lastAgreementDate || null,
+        newAgreementDate: data.newAgreementDate || null,
         oldAmount: data.oldAmount || null,
         newAmount: data.newAmount || null,
         resend: data.resend || false
