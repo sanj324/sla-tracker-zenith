@@ -6,12 +6,14 @@ import DashboardActions from "@/components/DashboardActions";
 import BankForm from "@/components/BankForm";
 import ReportsSection from "@/components/ReportsSection";
 import { useToast } from "@/components/ui/use-toast";
+import { cn } from "@/lib/utils";
 
 const Index = () => {
   const [banks, setBanks] = useState<Bank[]>([]);
   const [formOpen, setFormOpen] = useState(false);
   const [editingBank, setEditingBank] = useState<Bank | undefined>();
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState<"pending" | "completed" | "all">("pending");
 
   const stats: DashboardStats = {
     totalBanks: banks.length,
@@ -232,13 +234,74 @@ const Index = () => {
         }}
       />
 
-      <ReportsSection banks={banks} />
+      <div className="mt-8">
+        <div className="tabs-container">
+          <div className="flex space-x-4 mb-4">
+            <button
+              className={cn(
+                "px-4 py-2 rounded-t-lg transition-colors",
+                activeTab === "pending" ? "bg-blue-500 text-white" : "bg-gray-200"
+              )}
+              onClick={() => setActiveTab("pending")}
+            >
+              Pending Banks
+            </button>
+            <button
+              className={cn(
+                "px-4 py-2 rounded-t-lg transition-colors",
+                activeTab === "completed" ? "bg-green-500 text-white" : "bg-gray-200"
+              )}
+              onClick={() => setActiveTab("completed")}
+            >
+              Completed Banks
+            </button>
+            <button
+              className={cn(
+                "px-4 py-2 rounded-t-lg transition-colors",
+                activeTab === "all" ? "bg-purple-500 text-white" : "bg-gray-200"
+              )}
+              onClick={() => setActiveTab("all")}
+            >
+              All Banks
+            </button>
+          </div>
+        </div>
 
-      <BankTable
-        banks={banks}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+        <div className="bg-white rounded-lg shadow-md p-6">
+          {activeTab === "pending" && (
+            <div>
+              <h3 className="text-xl font-semibold mb-4 text-blue-600">Pending Banks</h3>
+              <BankTable
+                banks={banks.filter(bank => bank.status === "pending")}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
+            </div>
+          )}
+          {activeTab === "completed" && (
+            <div>
+              <h3 className="text-xl font-semibold mb-4 text-green-600">Completed Banks</h3>
+              <BankTable
+                banks={banks.filter(bank => bank.status === "completed")}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
+            </div>
+          )}
+          {activeTab === "all" && (
+            <div>
+              <h3 className="text-xl font-semibold mb-4 text-purple-600">All Banks</h3>
+              <BankTable
+                banks={banks}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+
+      <ReportsSection banks={banks} />
 
       <BankForm
         open={formOpen}
