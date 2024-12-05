@@ -24,8 +24,10 @@ const BankTable = ({ banks, onEdit, onDelete }: BankTableProps) => {
             <TableHead className="whitespace-nowrap">In Franking</TableHead>
             <TableHead className="whitespace-nowrap">Last Agreement Date</TableHead>
             <TableHead className="whitespace-nowrap">New Agreement Date</TableHead>
+            <TableHead className="whitespace-nowrap">Addon Agreement Date</TableHead>
             <TableHead className="whitespace-nowrap">Old Amount</TableHead>
             <TableHead className="whitespace-nowrap">New Amount</TableHead>
+            <TableHead className="whitespace-nowrap">Remarks</TableHead>
             <TableHead className="whitespace-nowrap">Resend</TableHead>
             <TableHead className="whitespace-nowrap">Status</TableHead>
             <TableHead className="whitespace-nowrap">Actions</TableHead>
@@ -34,7 +36,7 @@ const BankTable = ({ banks, onEdit, onDelete }: BankTableProps) => {
         <TableBody>
           {banks.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={14} className="text-center text-muted-foreground p-4">
+              <TableCell colSpan={16} className="text-center text-muted-foreground p-4">
                 No banks found. Please add some banks or import data.
               </TableCell>
             </TableRow>
@@ -70,8 +72,12 @@ const BankTable = ({ banks, onEdit, onDelete }: BankTableProps) => {
                 </TableCell>
                 <TableCell className="whitespace-nowrap">{bank.lastAgreementDate || "-"}</TableCell>
                 <TableCell className="whitespace-nowrap">{bank.newAgreementDate || "-"}</TableCell>
+                <TableCell className="whitespace-nowrap">{bank.addonAgreementDate || "-"}</TableCell>
                 <TableCell className="whitespace-nowrap">{bank.oldAmount || "-"}</TableCell>
                 <TableCell className="whitespace-nowrap">{bank.newAmount || "-"}</TableCell>
+                <TableCell className="whitespace-nowrap max-w-[200px] truncate" title={bank.remarks || ""}>
+                  {bank.remarks || "-"}
+                </TableCell>
                 <TableCell className="whitespace-nowrap">
                   {bank.resend ? (
                     <RefreshCw className="text-blue-500" />

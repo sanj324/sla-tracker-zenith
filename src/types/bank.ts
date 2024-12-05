@@ -12,6 +12,8 @@ export interface Bank {
   oldAmount: number | null;
   newAmount: number | null;
   resend: boolean;
+  remarks: string | null;
+  addonAgreementDate: string | null;
 }
 
 export interface DashboardStats {

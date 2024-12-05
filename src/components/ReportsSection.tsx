@@ -22,9 +22,9 @@ const ReportsSection = ({ banks }: ReportsSectionProps) => {
       return;
     }
 
-    const headers = ["Sr No,Bank Name,Branches,Send Mail,Courier Date,Received in TM,In Franking,Last Agreement Date,New Agreement Date,Old Amount,New Amount,Resend"];
+    const headers = ["Sr No,Bank Name,Branches,Send Mail,Courier Date,Received in TM,In Franking,Last Agreement Date,New Agreement Date,Addon Agreement Date,Old Amount,New Amount,Remarks,Resend"];
     const csvData = filteredBanks.map((bank, index) => (
-      `${index + 1},${bank.name},${bank.branches || ''},${bank.mailStatus || ''},${bank.courierDate || ''},${bank.receivedInTM ? 'Yes' : 'No'},${bank.inFranking ? 'Yes' : 'No'},${bank.lastAgreementDate || ''},${bank.newAgreementDate || ''},${bank.oldAmount || ''},${bank.newAmount || ''},${bank.resend ? 'Yes' : 'No'}`
+      `${index + 1},${bank.name},${bank.branches || ''},${bank.mailStatus || ''},${bank.courierDate || ''},${bank.receivedInTM ? 'Yes' : 'No'},${bank.inFranking ? 'Yes' : 'No'},${bank.lastAgreementDate || ''},${bank.newAgreementDate || ''},${bank.addonAgreementDate || ''},${bank.oldAmount || ''},${bank.newAmount || ''},${bank.remarks || ''},${bank.resend ? 'Yes' : 'No'}`
     ));
     
     const csv = headers.concat(csvData).join('\n');
