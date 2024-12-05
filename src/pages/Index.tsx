@@ -124,9 +124,15 @@ const Index = () => {
 
   const validateCsvData = (headers: string[]) => {
     const requiredHeader = "bank name";
-    const headerString = headers.map(h => h.toLowerCase().trim()).join(',');
+    // Convert all headers to lowercase for case-insensitive comparison
+    const headerExists = headers.some(header => 
+      header.toLowerCase().trim() === requiredHeader ||
+      header.toLowerCase().trim() === "bankname" ||
+      header.toLowerCase().trim() === "bank_name" ||
+      header.toLowerCase().trim() === "bank-name"
+    );
     
-    if (!headerString.includes(requiredHeader)) {
+    if (!headerExists) {
       throw new Error("Invalid CSV format. CSV must contain the 'Bank Name' column.");
     }
   };
