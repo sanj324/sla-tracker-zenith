@@ -47,9 +47,11 @@ const Index = () => {
         status: data.status || "pending",
         lastAgreementDate: data.lastAgreementDate || null,
         newAgreementDate: data.newAgreementDate || null,
+        addonAgreementDate: data.addonAgreementDate || null,
         oldAmount: data.oldAmount || null,
         newAmount: data.newAmount || null,
-        resend: data.resend || false
+        resend: data.resend || false,
+        remarks: data.remarks || null
       };
       setBanks([...banks, newBank]);
       toast({
