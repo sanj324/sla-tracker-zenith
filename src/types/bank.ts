@@ -14,6 +14,7 @@ export interface Bank {
   newAmount: number;
   remarks: string;
   addOnAgreement: boolean;
+  finishDate: string | null;
 }
 
 export interface DashboardStats {
