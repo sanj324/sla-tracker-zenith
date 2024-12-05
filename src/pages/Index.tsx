@@ -35,7 +35,7 @@ const Index = () => {
         description: "Bank information has been updated successfully.",
       });
     } else {
-      // Add new bank
+      // Add new bank with all required properties
       const newBank: Bank = {
         id: `bank-${Date.now()}`,
         name: data.name || "",
@@ -45,6 +45,10 @@ const Index = () => {
         receivedInTM: data.receivedInTM || false,
         inFranking: data.inFranking || false,
         status: data.status || "pending",
+        lastAgreementDate: data.lastAgreementDate || null,
+        oldAmount: data.oldAmount || null,
+        newAmount: data.newAmount || null,
+        resend: data.resend || false
       };
       setBanks([...banks, newBank]);
       toast({
