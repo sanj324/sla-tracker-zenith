@@ -54,22 +54,30 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[95vw] max-w-3xl h-[90vh]">
-        <DialogHeader>
-          <DialogTitle className="text-lg sm:text-xl">{initialData ? "Edit Bank" : "Add New Bank"}</DialogTitle>
-          <DialogDescription className="text-sm">
+      <DialogContent className="w-[95vw] max-w-[1200px] h-[90vh] overflow-hidden">
+        <DialogHeader className="pb-4 border-b">
+          <DialogTitle className="text-xl font-semibold">
+            {initialData ? "Edit Bank" : "Add New Bank"}
+          </DialogTitle>
+          <DialogDescription className="text-sm text-muted-foreground">
             {initialData ? "Update bank information" : "Add a new bank to the system"}
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="h-[calc(90vh-10rem)] px-4">
+        
+        <ScrollArea className="flex-1 h-[calc(90vh-8rem)] px-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
               <BankFormFields form={form} />
-              <div className="flex flex-col sm:flex-row justify-end gap-2 pt-4 sticky bottom-0 bg-white p-4 shadow-lg">
-                <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
+              
+              <div className="sticky bottom-0 flex justify-end gap-2 pt-4 mt-6 border-t bg-background">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => onOpenChange(false)}
+                >
                   Cancel
                 </Button>
-                <Button type="submit" className="w-full sm:w-auto">
+                <Button type="submit">
                   {initialData ? "Update" : "Add"} Bank
                 </Button>
               </div>
