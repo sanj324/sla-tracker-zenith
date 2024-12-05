@@ -15,6 +15,11 @@ export interface Bank {
   resendDate: string | null;
   remarks: string | null;
   addonAgreementDate: string | null;
+  receivedDate: string | null;
+  frankingDate: string | null;
+  processingStatus: "completed" | "pending" | "failed" | null;
+  agreementStatus: "completed" | "pending" | "failed" | null;
+  paymentStatus: "completed" | "pending" | "failed" | null;
 }
 
 export interface DashboardStats {
