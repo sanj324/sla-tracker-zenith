@@ -23,12 +23,7 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
       courierDate: null,
       receivedInTM: false,
       inFranking: false,
-      status: "pending",
-      lastAgreementDate: null,
-      newAgreementDate: null,
-      oldAmount: null,
-      newAmount: null,
-      resend: false
+      status: "pending"
     }
   });
 
@@ -47,10 +42,10 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[95vw] max-w-[425px] h-[90vh] overflow-y-auto sm:h-auto">
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="text-lg sm:text-xl">{initialData ? "Edit Bank" : "Add New Bank"}</DialogTitle>
-          <DialogDescription className="text-sm">
+          <DialogTitle>{initialData ? "Edit Bank" : "Add New Bank"}</DialogTitle>
+          <DialogDescription>
             {initialData ? "Update bank information" : "Add a new bank to the system"}
           </DialogDescription>
         </DialogHeader>
@@ -150,98 +145,11 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
                 </FormItem>
               )}
             />
-
-            <FormField
-              control={form.control}
-              name="lastAgreementDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Last Agreement Date</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="date" 
-                      {...field} 
-                      value={field.value || ''} 
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="newAgreementDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>New Agreement Date</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="date" 
-                      {...field} 
-                      value={field.value || ''} 
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="oldAmount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Old Amount</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="number" 
-                      {...field} 
-                      onChange={e => field.onChange(e.target.value ? Number(e.target.value) : null)}
-                      value={field.value || ''}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="newAmount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>New Amount</FormLabel>
-                  <FormControl>
-                    <Input 
-                      type="number" 
-                      {...field} 
-                      onChange={e => field.onChange(e.target.value ? Number(e.target.value) : null)}
-                      value={field.value || ''}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="resend"
-              render={({ field }) => (
-                <FormItem className="flex items-center gap-2">
-                  <FormControl>
-                    <Checkbox 
-                      checked={field.value} 
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormLabel>Resend Required</FormLabel>
-                </FormItem>
-              )}
-            />
-            
-            <div className="flex flex-col sm:flex-row justify-end gap-2 pt-4">
-              <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
+            <div className="flex justify-end gap-2">
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Cancel
               </Button>
-              <Button type="submit" className="w-full sm:w-auto">
+              <Button type="submit">
                 {initialData ? "Update" : "Add"} Bank
               </Button>
             </div>

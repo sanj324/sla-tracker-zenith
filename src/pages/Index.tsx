@@ -35,7 +35,7 @@ const Index = () => {
         description: "Bank information has been updated successfully.",
       });
     } else {
-      // Add new bank with all required properties
+      // Add new bank
       const newBank: Bank = {
         id: `bank-${Date.now()}`,
         name: data.name || "",
@@ -45,14 +45,6 @@ const Index = () => {
         receivedInTM: data.receivedInTM || false,
         inFranking: data.inFranking || false,
         status: data.status || "pending",
-        lastAgreementDate: data.lastAgreementDate || null,
-        newAgreementDate: data.newAgreementDate || null,
-        addonAgreementDate: data.addonAgreementDate || null,
-        oldAmount: data.oldAmount || null,
-        newAmount: data.newAmount || null,
-        resend: data.resend || false,
-        resendDate: data.resendDate || null,
-        remarks: data.remarks || null
       };
       setBanks([...banks, newBank]);
       toast({
@@ -132,7 +124,6 @@ const Index = () => {
             const courierDateIndex = headers.findIndex(h => h.includes('courice date') || h.includes('courier date'));
             const receivedIndex = headers.findIndex(h => h.includes('recvd in tm') || h.includes('received in tm'));
             const frankingIndex = headers.findIndex(h => h.includes('in franking'));
-            const resendDateIndex = headers.findIndex(h => h.includes('resend date'));
 
             const importedBanks: Bank[] = lines.slice(1)
               .filter(line => line.trim() !== '')
@@ -153,7 +144,6 @@ const Index = () => {
                   courierDate: parseDate(values[courierDateIndex] || ''),
                   receivedInTM: parseBoolean(values[receivedIndex] || ''),
                   inFranking: parseBoolean(values[frankingIndex] || ''),
-                  resendDate: parseDate(values[resendDateIndex] || ''),
                   status: values[mailStatusIndex]?.toLowerCase().includes('done') ? 'completed' : 'pending'
                 };
               })
@@ -189,9 +179,9 @@ const Index = () => {
   };
 
   const handleExport = () => {
-    const headers = ["Sr No,Bank Name,Branches,Send Mail,Courice Date,Recvd in TM,In Franking,Resend Date"];
+    const headers = ["Sr No,Bank Name,Branches,Send Mail,Courice Date,Recvd in TM,In Franking,Resend Courice"];
     const csvData = banks.map((bank, index) => (
-      `${index + 1},${bank.name},${bank.branches || ''},${bank.mailStatus || ''},${bank.courierDate || ''},${bank.receivedInTM || ''},${bank.inFranking || ''},${bank.resendDate || ''}`
+      `${index + 1},${bank.name},${bank.branches || ''},${bank.mailStatus || ''},${bank.courierDate || ''},${bank.receivedInTM || ''},${bank.inFranking || ''},`
     ));
     
     const csv = headers.concat(csvData).join('\n');
@@ -212,37 +202,29 @@ const Index = () => {
   };
 
   return (
-    <div className="container mx-auto py-4 px-2 sm:py-8 sm:px-4">
-      <h1 className="text-2xl sm:text-4xl font-bold mb-4 sm:mb-8 text-center">SLA Tracking System</h1>
-      <p className="text-center text-gray-600 mb-6 sm:mb-12 text-sm sm:text-base">Track and manage bank communications efficiently</p>
+    <div className="container mx-auto py-8 px-4">
+      <h1 className="text-4xl font-bold mb-8 text-center">SLA Tracking System</h1>
+      <p className="text-center text-gray-600 mb-12">Track and manage bank communications efficiently</p>
 
-      <div className="space-y-6">
-        <DashboardStatsDisplay stats={stats} />
-        
-        <div className="overflow-hidden">
-          <DashboardActions
-            onImport={handleImport}
-            onExport={handleExport}
-            onClear={handleClearData}
-            onAddBank={() => {
-              setEditingBank(undefined);
-              setFormOpen(true);
-            }}
-          />
-        </div>
+      <DashboardStatsDisplay stats={stats} />
+      
+      <DashboardActions
+        onImport={handleImport}
+        onExport={handleExport}
+        onClear={handleClearData}
+        onAddBank={() => {
+          setEditingBank(undefined);
+          setFormOpen(true);
+        }}
+      />
 
-        <div className="overflow-x-auto">
-          <ReportsSection banks={banks} />
-        </div>
+      <ReportsSection banks={banks} />
 
-        <div className="overflow-x-auto -mx-2 sm:mx-0">
-          <BankTable
-            banks={banks}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        </div>
-      </div>
+      <BankTable
+        banks={banks}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
 
       <BankForm
         open={formOpen}
