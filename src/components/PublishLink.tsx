@@ -2,13 +2,20 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { Share2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { Bank } from "@/types/bank";
 
-const PublishLink = () => {
+interface PublishLinkProps {
+  banks: Bank[];
+}
+
+const PublishLink = ({ banks }: PublishLinkProps) => {
   const { toast } = useToast();
   const currentDate = format(new Date(), "yyyy-MM-dd");
   
   const handlePublish = () => {
-    const publishUrl = `${window.location.origin}/published/${currentDate}`;
+    // Convert banks data to base64 to make it URL-safe
+    const encodedData = btoa(JSON.stringify(banks));
+    const publishUrl = `${window.location.origin}/published/${currentDate}?data=${encodedData}`;
     navigator.clipboard.writeText(publishUrl);
     toast({
       title: "Link copied!",
