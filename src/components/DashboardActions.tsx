@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Import, ArrowUpDown, Trash2, Plus, Save, Upload } from "lucide-react";
+import { Import, ArrowUpDown, Trash2, Plus } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Bank } from "@/types/bank";
 
@@ -21,77 +21,6 @@ const DashboardActions = ({ onImport, onExport, onClear, onAddBank }: DashboardA
         description: "All bank data has been cleared successfully.",
       });
     }
-  };
-
-  const handleBackup = () => {
-    const data = localStorage.getItem('banks');
-    if (!data) {
-      toast({
-        title: "Backup failed",
-        description: "No data found to backup.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const blob = new Blob([data], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `bank-data-backup-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-
-    toast({
-      title: "Backup created",
-      description: "Your data has been backed up successfully.",
-    });
-  };
-
-  const handleRestore = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          try {
-            const content = event.target?.result as string;
-            const data = JSON.parse(content);
-            
-            // Validate that the data is an array of Bank objects
-            if (!Array.isArray(data) || !data.every(item => 
-              typeof item === 'object' && 
-              'id' in item && 
-              'name' in item && 
-              'mailStatus' in item
-            )) {
-              throw new Error('Invalid backup file format');
-            }
-
-            localStorage.setItem('banks', content);
-            window.location.reload(); // Reload to reflect restored data
-
-            toast({
-              title: "Data restored",
-              description: "Your backup has been restored successfully.",
-            });
-          } catch (error) {
-            toast({
-              title: "Restore failed",
-              description: "Failed to restore backup. Please ensure the file is valid.",
-              variant: "destructive",
-            });
-          }
-        };
-        reader.readAsText(file);
-      }
-    };
-    input.click();
   };
 
   return (
@@ -117,20 +46,6 @@ const DashboardActions = ({ onImport, onExport, onClear, onAddBank }: DashboardA
           className="bg-red-600 hover:bg-red-700 text-white"
         >
           <Trash2 className="mr-2 h-4 w-4" /> Clear Data
-        </Button>
-        <Button 
-          onClick={handleBackup}
-          variant="secondary"
-          className="bg-green-600 hover:bg-green-700 text-white"
-        >
-          <Save className="mr-2 h-4 w-4" /> Backup
-        </Button>
-        <Button 
-          onClick={handleRestore}
-          variant="secondary"
-          className="bg-yellow-600 hover:bg-yellow-700 text-white"
-        >
-          <Upload className="mr-2 h-4 w-4" /> Restore
         </Button>
       </div>
       <Button 
