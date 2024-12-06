@@ -9,6 +9,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { initialBanks } from "@/data/initialBanks";
 import { processCSVData } from "@/utils/csvImport";
+import * as XLSX from 'xlsx';
 
 const Index = () => {
   const [banks, setBanks] = useState<Bank[]>([]);
@@ -126,42 +127,70 @@ const Index = () => {
   const handleImport = () => {
     const input = document.createElement("input");
     input.type = "file";
-    input.accept = ".csv,.txt";
+    input.accept = ".csv,.txt,.xlsx,.xls";
     input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          try {
-            const csvText = event.target?.result as string;
-            const importedBanks = processCSVData(csvText);
-            
-            console.log('Imported banks:', importedBanks);
-
-            setBanks(prevBanks => [...prevBanks, ...importedBanks]);
-            toast({
-              title: "Import successful",
-              description: `${importedBanks.length} banks have been imported successfully.`,
-            });
-          } catch (error) {
-            console.error('Import error:', error);
-            toast({
-              title: "Import failed",
-              description: error instanceof Error ? error.message : "Failed to import CSV file",
-              variant: "destructive",
-            });
+        try {
+          if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+            // Handle Excel files
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              try {
+                const data = new Uint8Array(e.target?.result as ArrayBuffer);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                const csvContent = XLSX.utils.sheet_to_csv(firstSheet);
+                
+                console.log('Converted Excel to CSV:', csvContent.substring(0, 200));
+                
+                const importedBanks = processCSVData(csvContent);
+                setBanks(prevBanks => [...prevBanks, ...importedBanks]);
+                toast({
+                  title: "Import successful",
+                  description: `${importedBanks.length} banks have been imported successfully.`,
+                });
+              } catch (error) {
+                console.error('Excel processing error:', error);
+                toast({
+                  title: "Import failed",
+                  description: "Failed to process Excel file",
+                  variant: "destructive",
+                });
+              }
+            };
+            reader.readAsArrayBuffer(file);
+          } else {
+            // Handle CSV/TXT files
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              try {
+                const csvText = event.target?.result as string;
+                const importedBanks = processCSVData(csvText);
+                setBanks(prevBanks => [...prevBanks, ...importedBanks]);
+                toast({
+                  title: "Import successful",
+                  description: `${importedBanks.length} banks have been imported successfully.`,
+                });
+              } catch (error) {
+                console.error('Import error:', error);
+                toast({
+                  title: "Import failed",
+                  description: error instanceof Error ? error.message : "Failed to import file",
+                  variant: "destructive",
+                });
+              }
+            };
+            reader.readAsText(file);
           }
-        };
-
-        reader.onerror = () => {
+        } catch (error) {
+          console.error('File reading error:', error);
           toast({
             title: "Import failed",
-            description: "Failed to read the CSV file",
+            description: "Failed to read the file",
             variant: "destructive",
           });
-        };
-
-        reader.readAsText(file);
+        }
       }
     };
     input.click();

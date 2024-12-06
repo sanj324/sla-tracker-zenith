@@ -1,22 +1,22 @@
 import { Bank } from "@/types/bank";
 
 export const validateHeaders = (headers: string[]) => {
-  console.log('Headers to validate:', headers); // Debug log
+  console.log('Headers to validate:', headers);
 
   // More flexible header matching for bank name
   const bankNameHeader = headers.find(header => 
     header.toLowerCase().includes('bank name') || 
     header.toLowerCase() === 'bank name' ||
-    header.toLowerCase() === 'bankname'
+    header.toLowerCase() === 'bankname' ||
+    header.toLowerCase() === 'bank'
   );
   
-  console.log('Found bank name header:', bankNameHeader); // Debug log
+  console.log('Found bank name header:', bankNameHeader);
   
   if (!bankNameHeader) {
     throw new Error("Invalid CSV format. CSV must contain a bank name column.");
   }
 
-  // Find other headers with flexible matching
   const branchesHeader = headers.find(header =>
     header.toLowerCase().includes('branch')
   );
@@ -88,15 +88,13 @@ export const parseBoolean = (value: string): boolean => {
 };
 
 export const processCSVData = (csvText: string): Bank[] => {
-  console.log('Processing CSV text:', csvText.substring(0, 100)); // Debug log first 100 chars
+  console.log('Processing CSV text:', csvText.substring(0, 100));
 
-  // Split by newlines and handle both \n and \r\n
-  const lines = csvText.split(/\r?\n/).map(line => line.trim()).filter(line => line);
-  console.log('Number of lines found:', lines.length); // Debug log
+  const lines = csvText.split(/[\r\n]+/).map(line => line.trim()).filter(line => line);
+  console.log('Number of lines found:', lines.length);
 
-  // Split first line by tab or multiple spaces
-  const headers = lines[0].split(/\t|    +/).map(header => header.trim());
-  console.log('Parsed headers:', headers); // Debug log
+  const headers = lines[0].split(',').map(header => header.trim());
+  console.log('Parsed headers:', headers);
   
   const {
     bankNameHeader,
@@ -120,13 +118,12 @@ export const processCSVData = (csvText: string): Bank[] => {
     bankNameIndex, 
     branchesIndex, 
     mailStatusIndex 
-  }); // Debug log
+  });
 
   return lines.slice(1)
     .filter(line => line.trim() !== '')
     .map((line, index) => {
-      // Split by tab or multiple spaces
-      const values = line.split(/\t|    +/).map(value => value.trim());
+      const values = line.split(',').map(value => value.trim());
       const bankName = values[bankNameIndex]?.trim();
       
       if (!bankName) {
@@ -134,7 +131,7 @@ export const processCSVData = (csvText: string): Bank[] => {
         return null;
       }
 
-      console.log(`Processing bank: ${bankName}`); // Debug log
+      console.log(`Processing bank: ${bankName}`);
 
       const mailStatus = parseMailStatus(values[mailStatusIndex] || '');
       const status = mailStatus === "sent" ? "completed" as const : "pending" as const;
