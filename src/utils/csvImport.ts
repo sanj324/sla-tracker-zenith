@@ -1,18 +1,28 @@
 import { Bank } from "@/types/bank";
 
 export const validateHeaders = (headers: string[]) => {
-  // More flexible header matching
+  console.log('Headers to validate:', headers); // Debug log
+
+  // More flexible header matching for bank name
   const bankNameHeader = headers.find(header => 
-    header.toLowerCase().includes('bank') || 
-    header.toLowerCase().includes('name')
+    header.toLowerCase().includes('bank name') || 
+    header.toLowerCase() === 'bank name' ||
+    header.toLowerCase() === 'bankname'
   );
   
+  console.log('Found bank name header:', bankNameHeader); // Debug log
+  
+  if (!bankNameHeader) {
+    throw new Error("Invalid CSV format. CSV must contain a bank name column.");
+  }
+
+  // Find other headers with flexible matching
   const branchesHeader = headers.find(header =>
     header.toLowerCase().includes('branch')
   );
   
   const mailHeader = headers.find(header =>
-    header.toLowerCase().includes('send') ||
+    header.toLowerCase().includes('send mail') ||
     header.toLowerCase().includes('mail')
   );
   
@@ -35,10 +45,6 @@ export const validateHeaders = (headers: string[]) => {
   const finishDateHeader = headers.find(header =>
     header.toLowerCase().includes('finish')
   );
-
-  if (!bankNameHeader) {
-    throw new Error("Invalid CSV format. CSV must contain a bank name column.");
-  }
 
   return {
     bankNameHeader,
@@ -82,8 +88,15 @@ export const parseBoolean = (value: string): boolean => {
 };
 
 export const processCSVData = (csvText: string): Bank[] => {
-  const lines = csvText.split('\n').map(line => line.trim()).filter(line => line);
-  const headers = lines[0].split('\t').map(header => header.trim());
+  console.log('Processing CSV text:', csvText.substring(0, 100)); // Debug log first 100 chars
+
+  // Split by newlines and handle both \n and \r\n
+  const lines = csvText.split(/\r?\n/).map(line => line.trim()).filter(line => line);
+  console.log('Number of lines found:', lines.length); // Debug log
+
+  // Split first line by tab or multiple spaces
+  const headers = lines[0].split(/\t|    +/).map(header => header.trim());
+  console.log('Parsed headers:', headers); // Debug log
   
   const {
     bankNameHeader,
@@ -103,16 +116,25 @@ export const processCSVData = (csvText: string): Bank[] => {
   const frankingIndex = headers.indexOf(frankingHeader);
   const finishDateIndex = headers.indexOf(finishDateHeader);
 
+  console.log('Column indices:', { 
+    bankNameIndex, 
+    branchesIndex, 
+    mailStatusIndex 
+  }); // Debug log
+
   return lines.slice(1)
     .filter(line => line.trim() !== '')
     .map((line, index) => {
-      const values = line.split('\t').map(value => value.trim());
+      // Split by tab or multiple spaces
+      const values = line.split(/\t|    +/).map(value => value.trim());
       const bankName = values[bankNameIndex]?.trim();
       
       if (!bankName) {
         console.warn(`Row ${index + 2}: Empty bank name, skipping row`);
         return null;
       }
+
+      console.log(`Processing bank: ${bankName}`); // Debug log
 
       const mailStatus = parseMailStatus(values[mailStatusIndex] || '');
       const status = mailStatus === "sent" ? "completed" as const : "pending" as const;
