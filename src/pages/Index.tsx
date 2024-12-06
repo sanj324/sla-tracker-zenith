@@ -5,6 +5,7 @@ import DashboardStatsDisplay from "@/components/DashboardStats";
 import DashboardActions from "@/components/DashboardActions";
 import BankForm from "@/components/BankForm";
 import ReportsSection from "@/components/ReportsSection";
+import DashboardHeader from "@/components/DashboardHeader";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { initialBanks } from "@/data/initialBanks";
@@ -18,7 +19,6 @@ const Index = () => {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<"pending" | "completed" | "all">("pending");
 
-  // Load initial banks on component mount
   useEffect(() => {
     const storedBanks = localStorage.getItem('banks');
     if (storedBanks) {
@@ -221,9 +221,8 @@ const Index = () => {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <h1 className="text-4xl font-bold mb-8 text-center">SLA Tracking System</h1>
-      <p className="text-center text-gray-600 mb-12">Track and manage bank communications efficiently</p>
-
+      <DashboardHeader />
+      
       <DashboardStatsDisplay stats={stats} />
       
       <DashboardActions
