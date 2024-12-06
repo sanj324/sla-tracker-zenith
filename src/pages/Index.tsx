@@ -124,22 +124,70 @@ const Index = () => {
 
   const validateCsvData = (headers: string[]) => {
     console.log('Headers received:', headers); // Debug log
-    // Look for any variation of "bank name" in the headers
+    
+    // More flexible header matching
     const bankNameHeader = headers.find(header => 
-      header.toLowerCase().trim().replace(/[\s_-]/g, '') === 'bankname'
+      header.toLowerCase().includes('bank') || 
+      header.toLowerCase().includes('name')
     );
     
-    console.log('Bank name header found:', bankNameHeader); // Debug log
+    const branchesHeader = headers.find(header =>
+      header.toLowerCase().includes('branch')
+    );
+    
+    const mailHeader = headers.find(header =>
+      header.toLowerCase().includes('send') ||
+      header.toLowerCase().includes('mail')
+    );
+    
+    const courierHeader = headers.find(header =>
+      header.toLowerCase().includes('courice') ||
+      header.toLowerCase().includes('courier')
+    );
+    
+    const receivedHeader = headers.find(header =>
+      header.toLowerCase().includes('recvd') ||
+      header.toLowerCase().includes('received') ||
+      header.toLowerCase().includes('tm')
+    );
+
+    const frankingHeader = headers.find(header =>
+      header.toLowerCase().includes('franking')
+    );
+
+    const finishDateHeader = headers.find(header =>
+      header.toLowerCase().includes('finish')
+    );
+    
+    console.log('Matched headers:', {
+      bankNameHeader,
+      branchesHeader,
+      mailHeader,
+      courierHeader,
+      receivedHeader,
+      frankingHeader,
+      finishDateHeader
+    });
     
     if (!bankNameHeader) {
-      throw new Error("Invalid CSV format. CSV must contain a 'Bank Name' column.");
+      throw new Error("Invalid CSV format. CSV must contain a bank name column.");
     }
-    return bankNameHeader;
+
+    return {
+      bankNameHeader,
+      branchesHeader,
+      mailHeader,
+      courierHeader,
+      receivedHeader,
+      frankingHeader,
+      finishDateHeader
+    };
   };
 
   const parseMailStatus = (status: string): "sent" | "pending" | "failed" => {
+    if (!status) return "pending";
     status = status.toLowerCase().trim();
-    if (status === "done" || status === "sent") return "sent";
+    if (status === "done" || status === "sent" || status === "yes") return "sent";
     if (status === "p" || status === "pending") return "pending";
     return "failed";
   };
@@ -151,20 +199,19 @@ const Index = () => {
   };
 
   const parseDate = (date: string): string | null => {
-    if (!date || date.trim() === '' || date.toLowerCase() === 'h2h') return null;
+    if (!date || 
+        date.trim() === '' || 
+        date.toLowerCase() === 'h2h' || 
+        date === '-' || 
+        date === '----------' ||
+        date === '---------') return null;
     return date.trim();
   };
 
   const parseBoolean = (value: string): boolean => {
+    if (!value) return false;
     value = value.toLowerCase().trim();
     return value === 'yes' || value === 'true' || value === '1' || value === 'done';
-  };
-
-  const parseStatus = (status: string): "completed" | "pending" | "failed" => {
-    status = status.toLowerCase().trim();
-    if (status === "done" || status === "completed") return "completed";
-    if (status === "p" || status === "pending") return "pending";
-    return "failed";
   };
 
   const handleImport = () => {
@@ -181,16 +228,25 @@ const Index = () => {
             const lines = csvText.split('\n').map(line => line.trim()).filter(line => line);
             const headers = lines[0].split(',').map(header => header.trim());
             
-            console.log('Processing CSV with headers:', headers); // Debug log
+            console.log('Processing CSV with headers:', headers);
             
-            const bankNameHeader = validateCsvData(headers);
+            const {
+              bankNameHeader,
+              branchesHeader,
+              mailHeader,
+              courierHeader,
+              receivedHeader,
+              frankingHeader,
+              finishDateHeader
+            } = validateCsvData(headers);
+
             const bankNameIndex = headers.indexOf(bankNameHeader);
-            const branchesIndex = headers.findIndex(h => h.toLowerCase().includes('branches'));
-            const mailStatusIndex = headers.findIndex(h => h.toLowerCase().includes('send mail'));
-            const courierDateIndex = headers.findIndex(h => h.toLowerCase().includes('courice date') || h.toLowerCase().includes('courier date'));
-            const receivedIndex = headers.findIndex(h => h.toLowerCase().includes('recvd in tm') || h.toLowerCase().includes('received in tm'));
-            const frankingIndex = headers.findIndex(h => h.toLowerCase().includes('in franking'));
-            const finishDateIndex = headers.findIndex(h => h.toLowerCase().includes('finish date'));
+            const branchesIndex = headers.indexOf(branchesHeader);
+            const mailStatusIndex = headers.indexOf(mailHeader);
+            const courierDateIndex = headers.indexOf(courierHeader);
+            const receivedIndex = headers.indexOf(receivedHeader);
+            const frankingIndex = headers.indexOf(frankingHeader);
+            const finishDateIndex = headers.indexOf(finishDateHeader);
 
             console.log('Column indices:', {
               bankNameIndex,
@@ -200,7 +256,7 @@ const Index = () => {
               receivedIndex,
               frankingIndex,
               finishDateIndex
-            }); // Debug log
+            });
 
             const importedBanks: Bank[] = lines.slice(1)
               .filter(line => line.trim() !== '')
@@ -214,7 +270,6 @@ const Index = () => {
                 }
 
                 const mailStatus = parseMailStatus(values[mailStatusIndex] || '');
-                // Determine status based on mail status
                 const status = mailStatus === "sent" ? "completed" as const : "pending" as const;
 
                 const bank: Bank = {
@@ -240,7 +295,7 @@ const Index = () => {
               })
               .filter((bank): bank is Bank => bank !== null);
 
-            console.log('Imported banks:', importedBanks); // Debug log
+            console.log('Imported banks:', importedBanks);
 
             setBanks(prevBanks => [...prevBanks, ...importedBanks]);
             toast({
