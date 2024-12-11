@@ -47,14 +47,18 @@ const BankForm = ({ open, onOpenChange, onSubmit, initialData }: BankFormProps) 
 
   const handleSubmit = (data: Partial<Bank>) => {
     try {
-      onSubmit(data);
+      // Ensure status is set based on form data
+      const updatedData = {
+        ...data,
+        status: data.status || "pending"
+      };
+      
+      onSubmit(updatedData);
       onOpenChange(false);
       form.reset();
       toast({
         title: initialData ? "Bank Updated" : "Bank Added",
-        description: initialData 
-          ? "Bank information has been updated successfully."
-          : "New bank has been added successfully.",
+        description: `Bank ${initialData ? "updated" : "added"} successfully with status: ${updatedData.status}`,
       });
     } catch (error) {
       toast({

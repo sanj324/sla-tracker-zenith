@@ -49,6 +49,25 @@ export const BasicDetailsCard = ({ form }: BasicDetailsCardProps) => {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="status"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Status</FormLabel>
+              <FormControl>
+                <select 
+                  className="w-full p-2 border rounded"
+                  {...field}
+                >
+                  <option value="pending">Pending</option>
+                  <option value="completed">Completed</option>
+                  <option value="failed">Failed</option>
+                </select>
+              </FormControl>
+            </FormItem>
+          )}
+        />
       </CardContent>
     </Card>
   );
