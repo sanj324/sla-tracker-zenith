@@ -1,7 +1,7 @@
+import { Card, CardContent } from "@/components/ui/card";
 import { FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Building2 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { UseFormReturn } from "react-hook-form";
 import { Bank } from "@/types/bank";
 
@@ -9,16 +9,10 @@ interface BasicDetailsCardProps {
   form: UseFormReturn<Partial<Bank>>;
 }
 
-export const BasicDetailsCard = ({ form }: BasicDetailsCardProps) => {
+const BasicDetailsCard = ({ form }: BasicDetailsCardProps) => {
   return (
-    <Card className="col-span-1">
-      <CardHeader>
-        <CardTitle className="text-lg flex items-center gap-2 text-blue-600">
-          <Building2 className="w-5 h-5" />
-          Basic Details
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <Card>
+      <CardContent className="pt-6 space-y-4">
         <FormField
           control={form.control}
           name="name"
@@ -36,14 +30,13 @@ export const BasicDetailsCard = ({ form }: BasicDetailsCardProps) => {
           name="branches"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Branches</FormLabel>
+              <FormLabel>Number of Branches</FormLabel>
               <FormControl>
-                <Input 
-                  type="number" 
-                  placeholder="Number of branches"
-                  {...field} 
-                  onChange={e => field.onChange(Number(e.target.value))}
-                  value={field.value || ''}
+                <Input
+                  type="number"
+                  placeholder="Enter number of branches"
+                  {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
                 />
               </FormControl>
             </FormItem>
@@ -55,16 +48,18 @@ export const BasicDetailsCard = ({ form }: BasicDetailsCardProps) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Status</FormLabel>
-              <FormControl>
-                <select 
-                  className="w-full p-2 border rounded"
-                  {...field}
-                >
-                  <option value="pending">Pending</option>
-                  <option value="completed">Completed</option>
-                  <option value="failed">Failed</option>
-                </select>
-              </FormControl>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
+                  <SelectItem value="failed">Failed</SelectItem>
+                </SelectContent>
+              </Select>
             </FormItem>
           )}
         />
@@ -72,3 +67,5 @@ export const BasicDetailsCard = ({ form }: BasicDetailsCardProps) => {
     </Card>
   );
 };
+
+export default BasicDetailsCard;
